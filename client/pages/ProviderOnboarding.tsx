@@ -78,6 +78,7 @@ export default function ProviderOnboarding() {
     backgroundConsent: false,
     termsAccepted: false,
     privacyAccepted: false,
+    ndaAccepted: false,
   });
 
   const steps = [
