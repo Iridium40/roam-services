@@ -311,7 +311,7 @@ export const useConversations = () => {
     } finally {
       setSending(false);
     }
-  }, [currentUser, getUserType, getUserIdentity, toast]);
+  }, [currentUser, getUserType, getUserIdentity, toast, safeFetch]);
 
   // Load participants for a conversation
   const loadParticipants = useCallback(async (conversationSid: string) => {
