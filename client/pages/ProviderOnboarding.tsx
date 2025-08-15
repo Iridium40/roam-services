@@ -961,7 +961,8 @@ export default function ProviderOnboarding() {
                       isSubmitting ||
                       !formData.termsAccepted ||
                       !formData.privacyAccepted ||
-                      !formData.backgroundConsent
+                      !formData.backgroundConsent ||
+                      !formData.ndaAccepted
                     }
                     className="bg-roam-blue hover:bg-roam-blue/90"
                   >
