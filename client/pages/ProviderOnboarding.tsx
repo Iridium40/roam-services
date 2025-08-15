@@ -801,8 +801,8 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 5: Review & Submit */}
-              {currentStep === 5 && (
+              {/* Step 6: Review & Submit */}
+              {currentStep === 6 && (
                 <div className="space-y-6">
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-start gap-3">
