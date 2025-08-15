@@ -116,13 +116,18 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-roam-blue transition-colors">
-                  Privacy Policy
+                <a
+                  href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-roam-blue transition-colors"
+                >
+                  Terms & Conditions
                 </a>
               </li>
               <li>
                 <a href="#" className="hover:text-roam-blue transition-colors">
-                  Terms of Service
+                  Privacy Policy
                 </a>
               </li>
             </ul>
