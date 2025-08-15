@@ -37,12 +37,6 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link
-              to="/providers"
-              className="text-foreground/70 hover:text-roam-blue transition-colors"
-            >
-              Become a Provider
-            </Link>
             {isProvider && <EdgeNotificationCenter />}
 
             {/* Customer Authentication */}
@@ -55,21 +49,13 @@ export function Header() {
               />
             )}
 
-            {/* Provider Authentication - only show if not a customer */}
-            {!isCustomer && (
-              <>
-                <Button
-                  asChild
-                  variant="outline"
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                >
-                  <Link to="/provider-portal">Provider Sign In</Link>
-                </Button>
-                <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-                  <Link to="/provider-portal?tab=signup">Provider Sign Up</Link>
-                </Button>
-              </>
-            )}
+            {/* Become a Provider link */}
+            <Link
+              to="/providers"
+              className="text-foreground/70 hover:text-roam-blue transition-colors"
+            >
+              Become a Provider
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
