@@ -96,10 +96,11 @@ export default function ProviderApplicationPhase1() {
   ];
 
   const businessTypes = [
-    "Sole Proprietorship",
-    "LLC",
-    "Corporation",
-    "Partnership",
+    { label: "Independent Provider", value: "independent" },
+    { label: "Small Business", value: "small_business" },
+    { label: "Franchise", value: "franchise" },
+    { label: "Enterprise", value: "enterprise" },
+    { label: "Other", value: "other" },
   ];
 
   const availableServices = [
