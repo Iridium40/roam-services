@@ -96,18 +96,24 @@ export default function ProviderOnboarding() {
     },
     {
       id: 3,
+      title: "NDA Agreement",
+      description: "Non-disclosure agreement",
+      icon: FileText,
+    },
+    {
+      id: 4,
       title: "Verification",
       description: "Identity and document verification",
       icon: Shield,
     },
     {
-      id: 4,
+      id: 5,
       title: "Professional Profile",
       description: "Services and expertise",
       icon: Star,
     },
     {
-      id: 5,
+      id: 6,
       title: "Review & Submit",
       description: "Final review and submission",
       icon: CheckCircle,
