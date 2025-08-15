@@ -36,6 +36,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import StripeIdentityVerification from "@/components/StripeIdentityVerification";
 import PartnerNDA from "@/components/PartnerNDA";
+import ProviderCodeOfConduct from "@/components/ProviderCodeOfConduct";
 
 export default function ProviderOnboarding() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -79,6 +80,7 @@ export default function ProviderOnboarding() {
     termsAccepted: false,
     privacyAccepted: false,
     ndaAccepted: false,
+    codeOfConductAccepted: false,
   });
 
   const steps = [
@@ -96,24 +98,30 @@ export default function ProviderOnboarding() {
     },
     {
       id: 3,
+      title: "Code of Conduct",
+      description: "Service provider standards",
+      icon: Users,
+    },
+    {
+      id: 4,
       title: "NDA Agreement",
       description: "Non-disclosure agreement",
       icon: FileText,
     },
     {
-      id: 4,
+      id: 5,
       title: "Verification",
       description: "Identity and document verification",
       icon: Shield,
     },
     {
-      id: 5,
+      id: 6,
       title: "Professional Profile",
       description: "Services and expertise",
       icon: Star,
     },
     {
-      id: 6,
+      id: 7,
       title: "Review & Submit",
       description: "Final review and submission",
       icon: CheckCircle,
@@ -187,6 +195,16 @@ export default function ProviderOnboarding() {
   const handleVerificationPending = () => {
     setVerificationPending(true);
     setIdentityVerified(false);
+  };
+
+  const handleCodeOfConductAccepted = (signatureData: any) => {
+    console.log('Code of Conduct acknowledged:', signatureData);
+    setFormData(prev => ({
+      ...prev,
+      codeOfConductAccepted: true,
+    }));
+    // Automatically advance to next step
+    handleNext();
   };
 
   const handleNDAAccepted = (signatureData: any) => {
@@ -580,8 +598,28 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 3: NDA Agreement */}
+              {/* Step 3: Code of Conduct */}
               {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div className="text-center mb-6">
+                    <h3 className="text-xl font-semibold mb-2">
+                      Service Provider Code of Conduct
+                    </h3>
+                    <p className="text-gray-600">
+                      Please review and acknowledge our professional standards and expectations.
+                    </p>
+                  </div>
+
+                  <ProviderCodeOfConduct
+                    onAccepted={handleCodeOfConductAccepted}
+                    businessName={formData.businessName}
+                    className="max-w-none"
+                  />
+                </div>
+              )}
+
+              {/* Step 4: NDA Agreement */}
+              {currentStep === 4 && (
                 <div className="space-y-6">
                   <div className="text-center mb-6">
                     <h3 className="text-xl font-semibold mb-2">
@@ -600,8 +638,8 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 4: Identity Verification with Stripe */}
-              {currentStep === 4 && (
+              {/* Step 5: Identity Verification with Stripe */}
+              {currentStep === 5 && (
                 <div className="space-y-6">
                   <StripeIdentityVerification
                     onVerificationComplete={handleVerificationComplete}
@@ -694,8 +732,8 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 5: Professional Profile */}
-              {currentStep === 5 && (
+              {/* Step 6: Professional Profile */}
+              {currentStep === 6 && (
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="bio">Professional Bio *</Label>
@@ -801,8 +839,8 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 6: Review & Submit */}
-              {currentStep === 6 && (
+              {/* Step 7: Review & Submit */}
+              {currentStep === 7 && (
                 <div className="space-y-6">
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-start gap-3">
@@ -962,7 +1000,8 @@ export default function ProviderOnboarding() {
                       !formData.termsAccepted ||
                       !formData.privacyAccepted ||
                       !formData.backgroundConsent ||
-                      !formData.ndaAccepted
+                      !formData.ndaAccepted ||
+                      !formData.codeOfConductAccepted
                     }
                     className="bg-roam-blue hover:bg-roam-blue/90"
                   >
