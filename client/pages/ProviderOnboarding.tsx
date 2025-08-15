@@ -694,8 +694,8 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 4: Professional Profile */}
-              {currentStep === 4 && (
+              {/* Step 5: Professional Profile */}
+              {currentStep === 5 && (
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="bio">Professional Bio *</Label>
