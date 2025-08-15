@@ -220,6 +220,17 @@ const App = () => (
               }
             />
 
+            {/* New Two-Phase Provider Application Routes */}
+            <Route
+              path="/provider-application/phase1"
+              element={<ProviderApplicationPhase1 />}
+            />
+
+            <Route
+              path="/provider-application/phase2"
+              element={<ProviderApplicationPhase2 />}
+            />
+
             <Route path="/provider/:providerId" element={<ProviderProfile />} />
 
             <Route path="/book/:businessId" element={<ProviderBooking />} />
