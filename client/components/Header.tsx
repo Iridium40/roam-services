@@ -55,7 +55,7 @@ export function Header() {
               <Link to="/provider-portal">Sign In</Link>
             </Button>
             <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-              <Link to="/provider-portal">Get Started</Link>
+              <Link to="/provider-portal?tab=signup">Get Started</Link>
             </Button>
           </div>
 
@@ -100,7 +100,7 @@ export function Header() {
                   <Link to="/provider-portal">Sign In</Link>
                 </Button>
                 <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-                  <Link to="/provider-portal">Get Started</Link>
+                  <Link to="/provider-portal?tab=signup">Get Started</Link>
                 </Button>
               </div>
             </div>
