@@ -60,6 +60,13 @@ export default function Providers() {
         "In-app check-in/check-out system time stamps your service arrival and departure. 24-hour live partner service rep for any assistance needed. Service area selection assures confidence in location safety for mobile providers.",
       highlight: "24/7 support",
     },
+    {
+      icon: Heart,
+      title: "Thriving Provider Community.",
+      description:
+        "Connect with like-minded professionals who share best practices, celebrate wins, and support each other's growth. From mentorship opportunities to exclusive networking events, you're never alone on your journey.",
+      highlight: "Collaborative network",
+    },
   ];
 
   const requirements = [
