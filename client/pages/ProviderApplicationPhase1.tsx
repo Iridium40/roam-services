@@ -381,23 +381,6 @@ export default function ProviderApplicationPhase1() {
                     </div>
                   </div>
 
-                  <div className="space-y-3">
-                    <Label>Service Areas *</Label>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                      {serviceAreaOptions.map(area => (
-                        <div key={area} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={area}
-                            checked={formData.serviceAreas.includes(area)}
-                            onCheckedChange={() => toggleServiceArea(area)}
-                          />
-                          <Label htmlFor={area} className="text-sm font-normal">
-                            {area}
-                          </Label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
 
                   <div className="space-y-3">
                     <Label>Services You Offer *</Label>
