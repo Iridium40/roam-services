@@ -232,6 +232,11 @@ const App = () => (
               element={<ProviderApplicationPhase2 />}
             />
 
+            <Route
+              path="/provider-application/thank-you"
+              element={<ProviderApplicationThankYou />}
+            />
+
             <Route path="/provider/:providerId" element={<ProviderProfile />} />
 
             <Route path="/book/:businessId" element={<ProviderBooking />} />
