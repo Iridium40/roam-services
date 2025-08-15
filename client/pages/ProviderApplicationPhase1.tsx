@@ -104,12 +104,12 @@ export default function ProviderApplicationPhase1() {
   ];
 
   const availableServices = [
-    "Beauty & Wellness",
-    "Massage Therapy", 
-    "Personal Training",
-    "Healthcare Services",
-    "IV Therapy",
-    "Wellness Coaching",
+    { label: "Beauty & Wellness", value: "beauty" },
+    { label: "Massage Therapy", value: "therapy" },
+    { label: "Personal Training & Fitness", value: "fitness" },
+    { label: "Healthcare Services", value: "healthcare" },
+    { label: "IV Therapy", value: "healthcare" },
+    { label: "Wellness Coaching", value: "therapy" },
   ];
 
   const serviceAreaOptions = [
