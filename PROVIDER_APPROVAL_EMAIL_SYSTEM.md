@@ -167,20 +167,22 @@ The approval process updates:
 - `approved_at` → current timestamp
 - `verification_notes` → admin notes (optional)
 
-## Environment Variables
+## Supabase Secrets
 
-Required environment variables:
+Required secrets (set via `supabase secrets set`):
 
-```env
-# Email Service
+```bash
+# Database and authentication
+SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_URL=https://vssomyuyhicaxsgiaupo.supabase.co
+
+# Email service
 RESEND_API_KEY=your_resend_api_key_here
 FROM_EMAIL=noreply@roamapp.com
 APP_URL=https://your-app-domain.com
-
-# Supabase (should already be configured)
-SUPABASE_URL=https://your-project.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 ```
+
+Access in Edge Functions via `Deno.env.get('SECRET_NAME')`.
 
 ## Testing
 
