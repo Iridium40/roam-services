@@ -20,6 +20,7 @@ import {
   Megaphone,
   BarChart3,
   ShieldCheck,
+  Heart,
 } from "lucide-react";
 
 export default function Providers() {
