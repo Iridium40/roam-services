@@ -380,12 +380,6 @@ export default function ProviderPortal() {
 
               {/* Success Stories */}
               <Card className="bg-gradient-to-r from-roam-light-blue/10 to-roam-blue/10 border-roam-light-blue/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-roam-blue">
-                    <Star className="w-5 h-5" />
-                    Provider Success Stories
-                  </CardTitle>
-                </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
                     <p className="text-sm text-foreground/80 italic mb-2">
