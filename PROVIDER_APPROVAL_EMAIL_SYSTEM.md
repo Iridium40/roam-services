@@ -40,23 +40,23 @@ The system provides three approaches for triggering approval emails:
 -- File: supabase/migrations/20241220_provider_approval_trigger.sql
 ```
 
-### Step 1.5: Configure Database Settings
+### Step 1.5: Configure Supabase Secrets
 
-Update the configuration in your migration with your actual values:
+Set up your project secrets using the Supabase CLI:
 
-```sql
--- Replace 'your-service-role-key-here' with your actual service role key
--- Replace 'your-project-ref' with your actual Supabase project reference
+```bash
+# Required for the Edge Function to work
+supabase secrets set SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzc29teXV5aGljYXhzZ2lhdXBvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzQ1MzcxNSwiZXhwIjoyMDY5MDI5NzE1fQ.54i9VPExknTktnWbyT9Z9rZKvSJOjs9fG60wncLhLlA"
 
--- Set your service role key
-PERFORM set_config('app.settings.service_role_key', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...', false);
+supabase secrets set SUPABASE_URL="https://vssomyuyhicaxsgiaupo.supabase.co"
 
--- Set your webhook URL
-PERFORM set_config('app.settings.webhook_url', 'https://vssomyuyhicaxsgiaupo.supabase.co/functions/v1/provider-approval-email', false);
-
--- Set your Supabase URL
-PERFORM set_config('app.settings.supabase_url', 'https://vssomyuyhicaxsgiaupo.supabase.co', false);
+# Email service configuration
+supabase secrets set RESEND_API_KEY="your_resend_api_key_here"
+supabase secrets set FROM_EMAIL="noreply@roamapp.com"
+supabase secrets set APP_URL="https://your-app-domain.com"
 ```
+
+These secrets are automatically available in Edge Functions via `Deno.env.get()`.
 
 ### Step 2: Deploy Supabase Edge Function (Optional)
 
