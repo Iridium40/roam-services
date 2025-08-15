@@ -129,7 +129,7 @@ async function sendApprovalEmail({
 
     if (!resendApiKey) {
       console.warn('RESEND_API_KEY not found, email will not be sent')
-      return
+      throw new Error('RESEND_API_KEY environment variable is not set')
     }
 
     const phase2Url = `${appUrl}/provider-application-phase-2?business_id=${businessId}`
@@ -161,56 +161,56 @@ async function sendApprovalEmail({
           <h1>🎉 Congratulations!</h1>
           <h2>Your ROAM Application Has Been Approved</h2>
         </div>
-        
+
         <div class="content">
           <p>Hello ${businessName} team,</p>
-          
+
           <p>Great news! Your business application has been <strong>approved</strong> and you're now ready to complete your ROAM provider setup.</p>
-          
+
           <div class="highlight">
             <strong>Next Step:</strong> Complete your financial onboarding to start accepting bookings and receiving payments.
           </div>
-          
+
           <div class="steps">
             <h3>What's Next - Phase 2 Setup:</h3>
-            
+
             <div class="step">
               <span class="step-number">1</span>
               <strong>Identity Verification:</strong> Complete Stripe Identity verification for secure payment processing
             </div>
-            
+
             <div class="step">
               <span class="step-number">2</span>
               <strong>Bank Account Connection:</strong> Connect your bank account through Plaid for secure payouts
             </div>
-            
+
             <div class="step">
               <span class="step-number">3</span>
               <strong>Service Configuration:</strong> Set up your services, pricing, and availability
             </div>
-            
+
             <div class="step">
               <span class="step-number">4</span>
               <strong>Profile Completion:</strong> Add photos, bio, and complete your business profile
             </div>
           </div>
-          
+
           <div style="text-align: center; margin: 30px 0;">
             <a href="${phase2Url}" class="button">Complete Phase 2 Setup →</a>
           </div>
-          
+
           <div class="highlight">
             <p><strong>Important:</strong> You'll need to complete Phase 2 within 30 days to maintain your approved status and start receiving bookings.</p>
           </div>
-          
+
           <p>If you have any questions during the setup process, our support team is here to help.</p>
-          
+
           <p>Welcome to the ROAM provider community!</p>
-          
+
           <p>Best regards,<br>
           The ROAM Team</p>
         </div>
-        
+
         <div class="footer">
           <p>This email was sent because your business application was approved in our system.</p>
           <p>If you have questions, contact us at support@roamapp.com</p>
@@ -230,7 +230,7 @@ Next Step: Complete your financial onboarding to start accepting bookings and re
 
 What's Next - Phase 2 Setup:
 1. Identity Verification: Complete Stripe Identity verification for secure payment processing
-2. Bank Account Connection: Connect your bank account through Plaid for secure payouts  
+2. Bank Account Connection: Connect your bank account through Plaid for secure payouts
 3. Service Configuration: Set up your services, pricing, and availability
 4. Profile Completion: Add photos, bio, and complete your business profile
 
@@ -276,7 +276,7 @@ If you have questions, contact us at support@roamapp.com
     console.log('Email sent successfully:', emailResult)
 
     // Log the email in our database for tracking
-    await supabase
+    const { error } = await supabase
       .from('email_logs')
       .insert({
         business_id: businessId,
@@ -287,8 +287,28 @@ If you have questions, contact us at support@roamapp.com
         sent_at: new Date().toISOString()
       })
 
+    if (error) {
+      console.error('Error logging email to database:', error)
+    }
+
   } catch (error) {
     console.error('Error sending approval email:', error)
+
+    // Log failed email attempt
+    try {
+      await supabase
+        .from('email_logs')
+        .insert({
+          business_id: businessId,
+          email_type: 'provider_approval',
+          recipient_email: contactEmail,
+          status: 'failed',
+          error_message: error.message
+        })
+    } catch (logError) {
+      console.error('Error logging email failure:', logError)
+    }
+
     throw error
   }
 }
