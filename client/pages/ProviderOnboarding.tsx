@@ -189,6 +189,16 @@ export default function ProviderOnboarding() {
     setIdentityVerified(false);
   };
 
+  const handleNDAAccepted = (signatureData: any) => {
+    console.log('NDA signed:', signatureData);
+    setFormData(prev => ({
+      ...prev,
+      ndaAccepted: true,
+    }));
+    // Automatically advance to next step
+    handleNext();
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
 
