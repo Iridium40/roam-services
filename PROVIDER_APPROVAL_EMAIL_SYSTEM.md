@@ -40,6 +40,24 @@ The system provides three approaches for triggering approval emails:
 -- File: supabase/migrations/20241220_provider_approval_trigger.sql
 ```
 
+### Step 1.5: Configure Database Settings
+
+Update the configuration in your migration with your actual values:
+
+```sql
+-- Replace 'your-service-role-key-here' with your actual service role key
+-- Replace 'your-project-ref' with your actual Supabase project reference
+
+-- Set your service role key
+PERFORM set_config('app.settings.service_role_key', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...', false);
+
+-- Set your webhook URL
+PERFORM set_config('app.settings.webhook_url', 'https://vssomyuyhicaxsgiaupo.supabase.co/functions/v1/provider-approval-email', false);
+
+-- Set your Supabase URL
+PERFORM set_config('app.settings.supabase_url', 'https://vssomyuyhicaxsgiaupo.supabase.co', false);
+```
+
 ### Step 2: Deploy Supabase Edge Function (Optional)
 
 ```bash
