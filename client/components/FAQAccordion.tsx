@@ -128,8 +128,10 @@ const faqData = [
         We take user privacy and data security seriously using industry-standard 
         security measures to protect your personal information. For more details, 
         please refer to the{" "}
-        <a 
-          href="https://roamyourbestlife.com/privacy-policy-2/"
+        <a
+          href="https://app.termly.io/policy-viewer/policy.html?policyUUID=64dec2e3-d030-4421-86ff-a3e7864709d8"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-roam-blue font-semibold hover:underline"
         >
           privacy policy.
