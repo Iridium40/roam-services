@@ -534,6 +534,15 @@ export default function ProviderPortal() {
                   <div className="mt-6 text-center text-sm text-foreground/60">
                     <p>
                       Need help?{" "}
+                      <Link to="/partner-faq">
+                        <Button
+                          variant="link"
+                          className="p-0 h-auto text-roam-blue"
+                        >
+                          Partner FAQ
+                        </Button>
+                      </Link>
+                      {" • "}
                       <Button
                         variant="link"
                         className="p-0 h-auto text-roam-blue"
