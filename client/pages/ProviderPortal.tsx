@@ -493,13 +493,49 @@ export default function ProviderPortal() {
                       </form>
                     </TabsContent>
 
-                    {/* Enhanced Business Registration Form */}
+                    {/* Provider Application - Phase 1 */}
                     <TabsContent value="signup">
-                      <BusinessRegistrationForm
-                        onSubmit={handleSignup}
-                        loading={isLoading}
-                        error={error}
-                      />
+                      <div className="text-center space-y-6">
+                        <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto">
+                          <Users className="w-8 h-8 text-white" />
+                        </div>
+
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">Start Your Provider Application</h3>
+                          <p className="text-gray-600 text-sm">
+                            Complete our streamlined two-phase application process to join the ROAM network.
+                          </p>
+                        </div>
+
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
+                          <h4 className="font-medium text-blue-900 mb-3">Application Process:</h4>
+                          <div className="space-y-2 text-sm text-blue-800">
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 bg-blue-200 rounded-full flex items-center justify-center text-xs font-medium">1</div>
+                              <span><strong>Phase 1:</strong> Basic information and credentials</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-xs font-medium">2</div>
+                              <span><strong>Phase 2:</strong> Financial setup after approval</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Button
+                          asChild
+                          className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                          size="lg"
+                        >
+                          <Link to="/provider-application/phase1">
+                            Begin Application
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Link>
+                        </Button>
+
+                        <p className="text-xs text-gray-500">
+                          Application typically takes 5-10 minutes to complete
+                        </p>
+                      </div>
                     </TabsContent>
                   </Tabs>
 
