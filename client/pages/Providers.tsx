@@ -15,37 +15,49 @@ import {
   TrendingUp,
   MapPin,
   Clock,
+  Settings,
+  CreditCard,
+  Megaphone,
+  BarChart3,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function Providers() {
   const benefits = [
     {
-      icon: DollarSign,
-      title: "Competitive Earnings",
+      icon: Settings,
+      title: "Your schedule. Your way.",
       description:
-        "Keep everything you charge customers. Only payout transaction fees apply.",
-      highlight: "$50-200/hour average",
-    },
-    {
-      icon: Calendar,
-      title: "Flexible Schedule",
-      description:
-        "Work when you want, where you want. Set your own availability and rates.",
+        "You set your availability. You approve your bookings. You are in control.",
       highlight: "100% control",
     },
     {
-      icon: Users,
-      title: "Quality Clients",
+      icon: CreditCard,
+      title: "Easy Earning. Upfront Payments.",
       description:
-        "Connect with verified customers who value premium services.",
-      highlight: "Pre-screened customers",
+        "You set your own rates, we handle the rest. Payments secured via the app prior to the service ensuring you are paid for your bookings. Members can also tip via the app, post service.",
+      highlight: "Guaranteed payment",
     },
     {
-      icon: Shield,
-      title: "Full Support",
+      icon: Megaphone,
+      title: "We'll do the Marketing for You.",
       description:
-        "Comprehensive insurance coverage, background verification, and 24/7 support.",
-      highlight: "Protected & supported",
+        "Access to a growing community of travelers and wellness-focused clientele specifically looking for the services you provide.",
+      highlight: "Quality clientele",
+    },
+    {
+      icon: BarChart3,
+      title: "Independent Growth. Team Support.",
+      description:
+        "Utilizing real-time app data tools, you can increase your bookings and visibility. No more managing cancellations, refunds, or re-bookings. All growth, no hassle.",
+      highlight: "Hassle-free growth",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Safety in Service.",
+      description:
+        "In-app check-in/check-out system time stamps your service arrival and departure. 24-hour live partner service rep for any assistance needed. Service area selection assures confidence in location safety for mobile providers.",
+      highlight: "24/7 support",
     },
   ];
 
@@ -161,7 +173,7 @@ export default function Providers() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
               <Card
                 key={index}
