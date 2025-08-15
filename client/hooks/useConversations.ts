@@ -512,14 +512,14 @@ export const useConversations = () => {
         try {
           setLoading(true);
           setError(null);
-          
+
           const requestBody = {
             action: 'get-conversation-participants',
             conversationSid
           };
           console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
-          
-          const response = await fetch('/api/twilio-conversations', {
+
+          const result = await safeFetch('/api/twilio-conversations', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -527,10 +527,8 @@ export const useConversations = () => {
             body: JSON.stringify(requestBody),
           });
 
-          console.log('📥 Response status:', response.status);
-          const result = await response.json();
           console.log('📥 Response result:', result);
-          
+
           if (!result.success) {
             throw new Error(result.error || 'Failed to load participants');
           }
