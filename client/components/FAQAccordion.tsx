@@ -108,8 +108,10 @@ const faqData = [
           cancellation policy
         </a>{" "}
         and{" "}
-        <a 
-          href="https://roamyourbestlife.com/terms-conditions/"
+        <a
+          href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-roam-blue font-semibold hover:underline"
         >
           terms and conditions
