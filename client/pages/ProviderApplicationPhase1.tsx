@@ -419,8 +419,8 @@ export default function ProviderApplicationPhase1() {
                         </SelectTrigger>
                         <SelectContent>
                           {businessTypes.map(type => (
-                            <SelectItem key={type} value={type.toLowerCase().replace(/ /g, '_')}>
-                              {type}
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label}
                             </SelectItem>
                           ))}
                         </SelectContent>
