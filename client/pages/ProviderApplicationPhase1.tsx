@@ -461,14 +461,14 @@ export default function ProviderApplicationPhase1() {
                     <Label>Services You Offer *</Label>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {availableServices.map(service => (
-                        <div key={service} className="flex items-center space-x-2">
+                        <div key={service.value} className="flex items-center space-x-2">
                           <Checkbox
-                            id={service}
-                            checked={formData.servicesOffered.includes(service)}
-                            onCheckedChange={() => toggleService(service)}
+                            id={service.value}
+                            checked={formData.servicesOffered.includes(service.value)}
+                            onCheckedChange={() => toggleService(service.value)}
                           />
-                          <Label htmlFor={service} className="text-sm font-normal">
-                            {service}
+                          <Label htmlFor={service.value} className="text-sm font-normal">
+                            {service.label}
                           </Label>
                         </div>
                       ))}
