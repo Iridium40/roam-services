@@ -569,7 +569,7 @@ export const useConversations = () => {
     if (currentUser) {
       console.log('🔄 Loading conversations for user:', currentUser.id);
       // Call loadConversations directly instead of through dependency
-      const loadConversationsDirectly = async () => {
+      const loadConversationsDirectly = async (retryCount = 0) => {
         if (!currentUser) return;
 
         try {
@@ -599,6 +599,17 @@ export const useConversations = () => {
           setConversations(result.conversations || []);
         } catch (error: any) {
           console.error('Error loading conversations:', error);
+
+          // Retry once on network-related errors
+          if (retryCount < 1 && (
+            error.message?.includes('Network request failed') ||
+            error.message?.includes('Network connection failed')
+          )) {
+            console.log('Retrying conversation load...');
+            setTimeout(() => loadConversationsDirectly(retryCount + 1), 1000);
+            return;
+          }
+
           setError(error.message || 'Failed to load conversations');
           toast({
             title: "Error",
