@@ -70,9 +70,9 @@ export default function Providers() {
   ];
 
   const requirements = [
-    "Professional certification or 2+ years experience",
+    "Professional certification",
     "Pass background check and verification process",
-    "Maintain 4.5+ star rating",
+    "Maintain 4+ star rating",
     "Provide your own equipment and transportation",
     "Available in Florida service areas",
     "Professional liability insurance (we can help)",
@@ -249,9 +249,8 @@ export default function Providers() {
                       </h4>
                       <p className="text-sm text-foreground/70">
                         All providers undergo comprehensive background checks,
-                        identity verification, and skill assessment. We also
-                        provide ongoing training and certification opportunities
-                        to help you grow.
+                        identity verification, and skill assessment to ensure
+                        quality and safety standards.
                       </p>
                     </div>
                   </div>
