@@ -57,19 +57,23 @@ export const useConversations = () => {
     try {
       const response = await fetch(url, options);
 
-      // Clone the response to avoid "body stream already read" errors
-      const responseClone = response.clone();
-
       if (!response.ok) {
-        const errorText = await responseClone.text();
+        // For error cases, read the text from the original response
+        let errorText = 'Unknown error';
+        try {
+          errorText = await response.text();
+        } catch {
+          errorText = `HTTP ${response.status}`;
+        }
         throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
 
+      // For success cases, read JSON from the original response
       const result = await response.json();
       return result;
     } catch (error: any) {
       // Re-throw with additional context
-      if (error.message?.includes('body stream already read')) {
+      if (error.message?.includes('body stream already read') || error.message?.includes('Response body is already used')) {
         throw new Error('Network request failed - please try again');
       }
       throw error;
