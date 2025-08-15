@@ -71,7 +71,7 @@ export function CustomerDropdown({ className = "" }: CustomerDropdownProps) {
             </AvatarFallback>
           </Avatar>
           <span className="hidden md:inline text-sm font-medium">
-            {customer.firstName}
+            {customer.firstName || "Customer"}
           </span>
           <ChevronDown className="w-4 h-4" />
         </Button>
