@@ -306,6 +306,34 @@ export default function PartnerNews() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+            <div className="flex flex-wrap justify-center items-center gap-4 mb-4">
+              <a
+                href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                Terms & Conditions
+              </a>
+              <span>•</span>
+              <a
+                href="https://app.termly.io/policy-viewer/policy.html?policyUUID=64dec2e3-d030-4421-86ff-a3e7864709d8"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <span>•</span>
+              <a
+                href="https://app.termly.io/policy-viewer/policy.html?policyUUID=f7401bab-92b4-49f6-b887-ba0e7a03a16a"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-white transition-colors"
+              >
+                Cookie Policy
+              </a>
+            </div>
             <p>&copy; 2024 ROAM. All rights reserved.</p>
           </div>
         </div>
