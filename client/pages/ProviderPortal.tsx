@@ -28,7 +28,7 @@ import {
   Star,
 } from "lucide-react";
 import { BusinessRegistrationForm } from "@/components/BusinessRegistrationForm";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import type { BusinessRegistration, BusinessType } from "@/lib/database.types";
