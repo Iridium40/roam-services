@@ -73,12 +73,6 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-4">
-              <a
-                href="#services"
-                className="text-foreground/70 hover:text-roam-blue transition-colors"
-              >
-                Services
-              </a>
               <Link
                 to="/providers"
                 className="text-foreground/70 hover:text-roam-blue transition-colors"
