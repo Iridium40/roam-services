@@ -37,6 +37,9 @@
     "twilio": "^5.8.0",
     "zod": "^3.23.8"
   },
+  "engines": {
+    "node": "18.x"
+  },
   "devDependencies": {
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
