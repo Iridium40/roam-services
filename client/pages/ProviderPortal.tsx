@@ -364,26 +364,6 @@ export default function ProviderPortal() {
 
               {/* Success Stories */}
               <Card className="bg-gradient-to-r from-roam-light-blue/10 to-roam-blue/10 border-roam-light-blue/30">
-                <CardContent className="space-y-4">
-                  <div>
-                    <p className="text-sm text-foreground/80 italic mb-2">
-                      "ROAM has transformed my massage therapy business. I've
-                      tripled my income and love the flexibility!"
-                    </p>
-                    <p className="text-xs text-foreground/60">
-                      - Sarah J., Licensed Massage Therapist
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-foreground/80 italic mb-2">
-                      "The platform is easy to use and the customers are always
-                      respectful and verified."
-                    </p>
-                    <p className="text-xs text-foreground/60">
-                      - Michael C., Personal Trainer
-                    </p>
-                  </div>
-                </CardContent>
               </Card>
             </div>
 
