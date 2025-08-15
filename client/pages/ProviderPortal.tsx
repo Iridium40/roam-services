@@ -358,9 +358,6 @@ export default function ProviderPortal() {
               </div>
 
 
-              {/* Success Stories */}
-              <Card className="bg-gradient-to-r from-roam-light-blue/10 to-roam-blue/10 border-roam-light-blue/30">
-              </Card>
             </div>
 
             {/* Right Side - Auth Forms */}
