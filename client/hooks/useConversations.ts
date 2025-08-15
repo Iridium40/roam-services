@@ -54,28 +54,45 @@ export const useConversations = () => {
 
   // Helper function to safely handle fetch responses
   const safeFetch = async (url: string, options: RequestInit) => {
+    let response: Response | null = null;
+
     try {
-      const response = await fetch(url, options);
+      response = await fetch(url, options);
 
       if (!response.ok) {
-        // For error cases, read the text from the original response
-        let errorText = 'Unknown error';
+        // For error cases, try to get error details
+        let errorText = `HTTP ${response.status}`;
         try {
-          errorText = await response.text();
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            errorText = errorData.error || errorData.message || errorText;
+          } else {
+            errorText = await response.text() || errorText;
+          }
         } catch {
-          errorText = `HTTP ${response.status}`;
+          // If we can't read the error body, just use the status
         }
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
+        throw new Error(errorText);
       }
 
-      // For success cases, read JSON from the original response
+      // For success cases, read JSON from the response
       const result = await response.json();
       return result;
     } catch (error: any) {
-      // Re-throw with additional context
-      if (error.message?.includes('body stream already read') || error.message?.includes('Response body is already used')) {
+      console.error('SafeFetch error:', error);
+
+      // Handle specific fetch/response errors
+      if (error.message?.includes('body stream already read') ||
+          error.message?.includes('Response body is already used') ||
+          error.message?.includes('already read')) {
         throw new Error('Network request failed - please try again');
       }
+
+      if (error.name === 'TypeError' && error.message?.includes('fetch')) {
+        throw new Error('Network connection failed - please check your connection');
+      }
+
       throw error;
     }
   };
