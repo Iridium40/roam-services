@@ -164,39 +164,56 @@ export default function ProviderApplicationPhase1() {
     try {
       const { supabase } = await import("@/lib/supabase");
 
-      // Generate unique application ID for file naming
+      // Generate unique application ID for business profile
       const applicationId = crypto.randomUUID();
-      const documentUrls: Record<string, string> = {};
+      const uploadedDocuments: Array<{
+        file: File;
+        documentType: string;
+        folder: string;
+        uploadPath?: string;
+        fileSize?: number;
+      }> = [];
 
-      // Upload documents to Supabase storage
+      // Prepare documents for upload
       if (formData.professionalLicense) {
-        const fileName = `${applicationId}_professional_license_${Date.now()}.${formData.professionalLicense.name.split('.').pop()}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('roam-file-storage')
-          .upload(`provider-plc/${fileName}`, formData.professionalLicense);
-
-        if (uploadError) throw new Error(`Failed to upload professional license: ${uploadError.message}`);
-        documentUrls.professionalLicense = uploadData.path;
+        uploadedDocuments.push({
+          file: formData.professionalLicense,
+          documentType: 'professional_license',
+          folder: 'provider-plc'
+        });
       }
 
       if (formData.liabilityInsurance) {
-        const fileName = `${applicationId}_liability_insurance_${Date.now()}.${formData.liabilityInsurance.name.split('.').pop()}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('roam-file-storage')
-          .upload(`provider-li/${fileName}`, formData.liabilityInsurance);
-
-        if (uploadError) throw new Error(`Failed to upload liability insurance: ${uploadError.message}`);
-        documentUrls.liabilityInsurance = uploadData.path;
+        uploadedDocuments.push({
+          file: formData.liabilityInsurance,
+          documentType: 'liability_insurance',
+          folder: 'provider-li'
+        });
       }
 
       if (formData.businessLicense) {
-        const fileName = `${applicationId}_business_license_${Date.now()}.${formData.businessLicense.name.split('.').pop()}`;
+        uploadedDocuments.push({
+          file: formData.businessLicense,
+          documentType: 'business_license',
+          folder: 'provider-bl'
+        });
+      }
+
+      // Upload documents to Supabase storage
+      for (let doc of uploadedDocuments) {
+        const fileExtension = doc.file.name.split('.').pop();
+        const fileName = `${applicationId}_${doc.documentType}_${Date.now()}.${fileExtension}`;
+
         const { data: uploadData, error: uploadError } = await supabase.storage
           .from('roam-file-storage')
-          .upload(`provider-bl/${fileName}`, formData.businessLicense);
+          .upload(`${doc.folder}/${fileName}`, doc.file);
 
-        if (uploadError) throw new Error(`Failed to upload business license: ${uploadError.message}`);
-        documentUrls.businessLicense = uploadData.path;
+        if (uploadError) {
+          throw new Error(`Failed to upload ${doc.documentType}: ${uploadError.message}`);
+        }
+
+        doc.uploadPath = uploadData.path;
+        doc.fileSize = doc.file.size;
       }
 
       // Create business profile record
@@ -213,9 +230,7 @@ export default function ProviderApplicationPhase1() {
           setup_completed: false,
           setup_step: 1,
           is_active: false,
-          // Store document URLs in a JSON field or separate table
           verification_notes: JSON.stringify({
-            documents: documentUrls,
             businessDescription: formData.businessDescription,
             businessAddress: {
               street: formData.businessAddress,
@@ -242,7 +257,35 @@ export default function ProviderApplicationPhase1() {
         throw new Error(`Failed to create business profile: ${businessError.message}`);
       }
 
-      console.log('Application submitted successfully:', businessProfile);
+      // Create business_documents records for each uploaded document
+      const documentRecords = uploadedDocuments.map(doc => ({
+        business_id: applicationId,
+        document_type: doc.documentType,
+        document_name: doc.file.name,
+        file_url: doc.uploadPath!,
+        file_size_bytes: doc.fileSize!,
+        verification_status: 'pending', // Assuming this matches your enum
+        created_at: new Date().toISOString(),
+      }));
+
+      if (documentRecords.length > 0) {
+        const { error: documentsError } = await supabase
+          .from('business_documents')
+          .insert(documentRecords);
+
+        if (documentsError) {
+          // Log error but don't fail the entire application
+          console.error('Error creating document records:', documentsError);
+
+          // Optionally, you might want to still throw an error if document tracking is critical
+          // throw new Error(`Failed to create document records: ${documentsError.message}`);
+        }
+      }
+
+      console.log('Application submitted successfully:', {
+        businessProfile,
+        documentsUploaded: uploadedDocuments.length
+      });
 
       // Redirect to thank you page
       navigate('/provider-application/thank-you');
