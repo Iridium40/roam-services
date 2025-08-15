@@ -580,8 +580,28 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 3: Identity Verification with Stripe */}
+              {/* Step 3: NDA Agreement */}
               {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div className="text-center mb-6">
+                    <h3 className="text-xl font-semibold mb-2">
+                      Non-Disclosure Agreement
+                    </h3>
+                    <p className="text-gray-600">
+                      Please review and sign our NDA to protect customer privacy and confidential information.
+                    </p>
+                  </div>
+
+                  <PartnerNDA
+                    onAccepted={handleNDAAccepted}
+                    businessName={formData.businessName}
+                    className="max-w-none"
+                  />
+                </div>
+              )}
+
+              {/* Step 4: Identity Verification with Stripe */}
+              {currentStep === 4 && (
                 <div className="space-y-6">
                   <StripeIdentityVerification
                     onVerificationComplete={handleVerificationComplete}
