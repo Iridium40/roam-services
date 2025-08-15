@@ -117,18 +117,29 @@ Tracks all sent emails for auditing and debugging:
 ```sql
 CREATE TABLE email_logs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  business_id UUID REFERENCES business_profiles(id),
+  business_id UUID REFERENCES business_profiles(id) ON DELETE CASCADE,
   email_type TEXT NOT NULL,
   recipient_email TEXT NOT NULL,
-  email_id TEXT, -- External service email ID
+  email_id TEXT, -- External service email ID (like Resend ID)
   status TEXT NOT NULL DEFAULT 'pending',
   sent_at TIMESTAMPTZ DEFAULT NOW(),
   error_message TEXT,
-  metadata JSONB DEFAULT '{}',
-  retry_count INTEGER DEFAULT 0,
-  last_retry_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- RLS Policies
+ALTER TABLE email_logs ENABLE ROW LEVEL SECURITY;
+
+-- Service role has full access
+CREATE POLICY "Service role can manage email logs" ON email_logs
+  FOR ALL TO service_role USING (true);
+
+-- Businesses can view their own email logs
+CREATE POLICY "Businesses can view their own email logs" ON email_logs
+  FOR SELECT TO authenticated
+  USING (business_id IN (
+    SELECT id FROM business_profiles WHERE user_id = auth.uid()
+  ));
 ```
 
 ### business_profiles Updates
