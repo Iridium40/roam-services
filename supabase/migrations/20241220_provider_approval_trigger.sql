@@ -81,32 +81,16 @@ COMMENT ON FUNCTION trigger_provider_approval_email() IS
 COMMENT ON TRIGGER on_business_approval ON business_profiles IS
 'Sends approval email notification when business gets approved';
 
--- Set application settings (do this once for your project)
--- Replace with your actual service role key
-DO $$
-BEGIN
-  -- Only set if not already set
-  BEGIN
-    PERFORM set_config('app.settings.service_role_key', 'your-service-role-key-here', false);
-  EXCEPTION
-    WHEN undefined_object THEN
-      -- Setting doesn't exist yet, create it
-      PERFORM set_config('app.settings.service_role_key', 'your-service-role-key-here', false);
-  END;
+-- Instead of database parameters, set project secrets using the CLI
+-- Run these commands in your terminal:
+-- supabase secrets set SERVICE_ROLE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzc29teXV5aGljYXhzZ2lhdXBvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzQ1MzcxNSwiZXhwIjoyMDY5MDI5NzE1fQ.54i9VPExknTktnWbyT9Z9rZKvSJOjs9fG60wncLhLlA"
+-- supabase secrets set SUPABASE_URL="https://vssomyuyhicaxsgiaupo.supabase.co"
 
-  -- You can also set webhook URL explicitly if needed
-  BEGIN
-    PERFORM set_config('app.settings.webhook_url', 'https://your-project-ref.supabase.co/functions/v1/provider-approval-email', false);
-  EXCEPTION
-    WHEN undefined_object THEN
-      PERFORM set_config('app.settings.webhook_url', 'https://your-project-ref.supabase.co/functions/v1/provider-approval-email', false);
-  END;
+-- Access these in Edge Functions via:
+-- Deno.env.get("SERVICE_ROLE_KEY")
+-- Deno.env.get("SUPABASE_URL")
 
-  -- Set Supabase URL for constructing webhook URLs
-  BEGIN
-    PERFORM set_config('app.settings.supabase_url', 'https://your-project-ref.supabase.co', false);
-  EXCEPTION
-    WHEN undefined_object THEN
-      PERFORM set_config('app.settings.supabase_url', 'https://your-project-ref.supabase.co', false);
-  END;
-END $$;
+-- Optional: Set other email-related secrets
+-- supabase secrets set RESEND_API_KEY="your_resend_api_key"
+-- supabase secrets set FROM_EMAIL="noreply@roamapp.com"
+-- supabase secrets set APP_URL="https://your-app-domain.com"
