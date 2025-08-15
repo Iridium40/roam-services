@@ -167,12 +167,8 @@ export default function ProviderApplicationPhase1() {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
       
-      toast({
-        title: "Application Submitted Successfully!",
-        description: "Your application is under review. You'll receive an email within 2-3 business days with next steps.",
-      });
-      
-      // Could redirect to a "thank you" page
+      // Redirect to thank you page
+      navigate('/provider-application/thank-you');
       
     } catch (error) {
       toast({
