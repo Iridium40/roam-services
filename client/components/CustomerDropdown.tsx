@@ -33,10 +33,10 @@ export function CustomerDropdown({ className = "" }: CustomerDropdownProps) {
 
   // Debug customer data
   console.log("CustomerDropdown - customer data:", {
-    firstName: customer.firstName,
-    lastName: customer.lastName,
+    firstName: customer.first_name,
+    lastName: customer.last_name,
     email: customer.email,
-    imageUrl: customer.imageUrl
+    imageUrl: customer.image_url
   });
 
   const handleSignOut = async () => {
