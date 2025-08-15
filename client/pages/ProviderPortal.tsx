@@ -355,10 +355,6 @@ export default function ProviderPortal() {
                   Welcome to the{" "}
                   <span className="text-roam-blue">Provider Portal</span>
                 </h1>
-                <p className="text-lg text-foreground/70 mb-8">
-                  Join Florida's premier network of service professionals and
-                  start growing your business today.
-                </p>
               </div>
 
 
