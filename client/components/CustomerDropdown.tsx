@@ -49,8 +49,8 @@ export function CustomerDropdown({ className = "" }: CustomerDropdownProps) {
 
   // Get customer initials for avatar fallback
   const getInitials = () => {
-    const firstName = customer.firstName || "";
-    const lastName = customer.lastName || "";
+    const firstName = customer.first_name || "";
+    const lastName = customer.last_name || "";
     const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
     // Fallback to 'CU' (Customer User) if no names available
