@@ -53,6 +53,7 @@ import PartnerFAQ from "./pages/PartnerFAQ";
 import PartnerNDAPage from "./pages/PartnerNDAPage";
 import ProviderCodeOfConductPage from "./pages/ProviderCodeOfConductPage";
 import PlaidTest from "./pages/PlaidTest";
+import FloatingChatBot from "./components/FloatingChatBot";
 
 const queryClient = new QueryClient();
 
