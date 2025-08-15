@@ -267,7 +267,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
   };
 
   // Disable OAuth providers temporarily due to configuration issues
-  const showOAuthProviders = true;
+  const showOAuthProviders = false; // Temporarily disabled until Google OAuth origin is configured
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
