@@ -51,6 +51,16 @@ export default function ProviderPortal() {
     checkIfAlreadyAuthenticated();
   }, []);
 
+  // Update active tab when URL parameters change
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "signup" || tabParam === "register") {
+      setActiveTab("signup");
+    } else if (tabParam === "login" || tabParam === "signin") {
+      setActiveTab("login");
+    }
+  }, [searchParams]);
+
   const checkIfAlreadyAuthenticated = async () => {
     // Skip Supabase client check since we're using direct API
     // Auth state is managed through AuthContext
@@ -436,7 +446,7 @@ export default function ProviderPortal() {
                           <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
                             <div className="flex items-start gap-2">
                               <div className="w-4 h-4 text-red-600 mt-0.5">
-                                ⚠️
+                                ⚠���
                               </div>
                               <p className="text-sm text-red-800">{error}</p>
                             </div>
