@@ -35,6 +35,7 @@ import {
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import StripeIdentityVerification from "@/components/StripeIdentityVerification";
+import PartnerNDA from "@/components/PartnerNDA";
 
 export default function ProviderOnboarding() {
   const [currentStep, setCurrentStep] = useState(1);
