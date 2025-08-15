@@ -707,7 +707,16 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
         </Tabs>
 
         <div className="text-center text-sm text-foreground/60">
-          By signing up, you agree to our Terms of Service and Privacy Policy
+          By signing up, you agree to our{" "}
+          <a
+            href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-roam-blue hover:underline"
+          >
+            Terms & Conditions
+          </a>{" "}
+          and Privacy Policy
         </div>
       </DialogContent>
     </Dialog>
