@@ -85,12 +85,6 @@ export function Header() {
               >
                 Services
               </a>
-              <a
-                href="#how-it-works"
-                className="text-foreground/70 hover:text-roam-blue transition-colors"
-              >
-                How it Works
-              </a>
               <Link
                 to="/providers"
                 className="text-foreground/70 hover:text-roam-blue transition-colors"
