@@ -681,8 +681,16 @@ export default function ProviderApplicationPhase1() {
                         }
                       />
                       <Label htmlFor="privacyAccepted" className="text-sm leading-relaxed">
-                        I have read and agree to the Privacy Policy and consent to the processing 
-                        of my personal data for verification and approval purposes.
+                        I have read and agree to the{" "}
+                        <a
+                          href="https://app.termly.io/policy-viewer/policy.html?policyUUID=64dec2e3-d030-4421-86ff-a3e7864709d8"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-roam-blue hover:underline"
+                        >
+                          Privacy Policy
+                        </a>{" "}
+                        and consent to the processing of my personal data for verification and approval purposes.
                       </Label>
                     </div>
                   </div>
