@@ -31,6 +31,7 @@
     "instafeed.js": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
+    "plaid": "^38.0.0",
     "react-qr-code": "^2.0.18",
     "stripe": "^18.4.0",
     "twilio": "^5.8.0",
