@@ -48,6 +48,7 @@ import Blog from "./pages/Blog";
 import FAQ from "./pages/FAQ";
 import PartnerFAQ from "./pages/PartnerFAQ";
 import PartnerNDAPage from "./pages/PartnerNDAPage";
+import ProviderCodeOfConductPage from "./pages/ProviderCodeOfConductPage";
 import PlaidTest from "./pages/PlaidTest";
 
 const queryClient = new QueryClient();
@@ -70,6 +71,7 @@ const App = () => (
             <Route path="/faq" element={<FAQ />} />
             <Route path="/partner-faq" element={<PartnerFAQ />} />
             <Route path="/partner-nda" element={<PartnerNDAPage />} />
+            <Route path="/provider-code-of-conduct" element={<ProviderCodeOfConductPage />} />
             <Route path="/support" element={<Support />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/sign-in" element={<SignIn />} />
