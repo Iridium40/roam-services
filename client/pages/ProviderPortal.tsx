@@ -361,22 +361,6 @@ export default function ProviderPortal() {
                 </p>
               </div>
 
-              {/* Benefits Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {benefits.map((benefit, index) => (
-                  <Card key={index} className="border-border/50">
-                    <CardContent className="p-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center mb-4">
-                        <benefit.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <h3 className="font-semibold mb-2">{benefit.title}</h3>
-                      <p className="text-sm text-foreground/70">
-                        {benefit.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
 
               {/* Success Stories */}
               <Card className="bg-gradient-to-r from-roam-light-blue/10 to-roam-blue/10 border-roam-light-blue/30">
