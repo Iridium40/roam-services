@@ -17,6 +17,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import FAQAccordion from "@/components/FAQAccordion";
 
 export default function About() {
   const communityAreas = [
