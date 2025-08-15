@@ -80,8 +80,8 @@ export function CustomerDropdown({ className = "" }: CustomerDropdownProps) {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">
-              {customer.firstName || customer.lastName
-                ? `${customer.firstName || ""} ${customer.lastName || ""}`.trim()
+              {customer.first_name || customer.last_name
+                ? `${customer.first_name || ""} ${customer.last_name || ""}`.trim()
                 : "Customer"
               }
             </p>
