@@ -159,21 +159,98 @@ export default function ProviderApplicationPhase1() {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    
+
     try {
-      // Here you would submit to your backend API
-      // This would create a "pending" provider application
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
+      const { supabase } = await import("@/lib/supabase");
+
+      // Generate unique application ID for file naming
+      const applicationId = crypto.randomUUID();
+      const documentUrls: Record<string, string> = {};
+
+      // Upload documents to Supabase storage
+      if (formData.professionalLicense) {
+        const fileName = `${applicationId}_professional_license_${Date.now()}.${formData.professionalLicense.name.split('.').pop()}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('roam-file-storage')
+          .upload(`provider-plc/${fileName}`, formData.professionalLicense);
+
+        if (uploadError) throw new Error(`Failed to upload professional license: ${uploadError.message}`);
+        documentUrls.professionalLicense = uploadData.path;
+      }
+
+      if (formData.liabilityInsurance) {
+        const fileName = `${applicationId}_liability_insurance_${Date.now()}.${formData.liabilityInsurance.name.split('.').pop()}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('roam-file-storage')
+          .upload(`provider-li/${fileName}`, formData.liabilityInsurance);
+
+        if (uploadError) throw new Error(`Failed to upload liability insurance: ${uploadError.message}`);
+        documentUrls.liabilityInsurance = uploadData.path;
+      }
+
+      if (formData.businessLicense) {
+        const fileName = `${applicationId}_business_license_${Date.now()}.${formData.businessLicense.name.split('.').pop()}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('roam-file-storage')
+          .upload(`provider-bl/${fileName}`, formData.businessLicense);
+
+        if (uploadError) throw new Error(`Failed to upload business license: ${uploadError.message}`);
+        documentUrls.businessLicense = uploadData.path;
+      }
+
+      // Create business profile record
+      const { data: businessProfile, error: businessError } = await supabase
+        .from('business_profiles')
+        .insert({
+          id: applicationId,
+          business_name: formData.businessName,
+          contact_email: formData.email,
+          phone: formData.phone,
+          business_type: formData.businessType,
+          service_categories: formData.servicesOffered,
+          verification_status: 'pending',
+          setup_completed: false,
+          setup_step: 1,
+          is_active: false,
+          // Store document URLs in a JSON field or separate table
+          verification_notes: JSON.stringify({
+            documents: documentUrls,
+            businessDescription: formData.businessDescription,
+            businessAddress: {
+              street: formData.businessAddress,
+              city: formData.businessCity,
+              state: formData.businessState,
+              zip: formData.businessZip,
+            },
+            contactInfo: {
+              firstName: formData.firstName,
+              lastName: formData.lastName,
+            },
+            agreements: {
+              backgroundCheckConsent: formData.backgroundCheckConsent,
+              termsAccepted: formData.termsAccepted,
+              privacyAccepted: formData.privacyAccepted,
+            },
+            submittedAt: new Date().toISOString(),
+          })
+        })
+        .select()
+        .single();
+
+      if (businessError) {
+        throw new Error(`Failed to create business profile: ${businessError.message}`);
+      }
+
+      console.log('Application submitted successfully:', businessProfile);
+
       // Redirect to thank you page
       navigate('/provider-application/thank-you');
-      
-    } catch (error) {
+
+    } catch (error: any) {
+      console.error('Application submission error:', error);
       toast({
         title: "Submission Error",
-        description: "There was an error submitting your application. Please try again.",
+        description: error.message || "There was an error submitting your application. Please try again.",
         variant: "destructive",
       });
     } finally {
