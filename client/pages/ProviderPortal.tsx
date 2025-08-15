@@ -351,6 +351,13 @@ export default function ProviderPortal() {
             {/* Left Side - Benefits */}
             <div className="space-y-8">
               <div className="text-center lg:text-left">
+                <div className="flex justify-center lg:justify-start mb-6">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
+                    alt="ROAM - Your Best Life. Everywhere."
+                    className="h-16 w-auto"
+                  />
+                </div>
                 <h1 className="text-3xl sm:text-4xl font-bold mb-4">
                   Welcome to the{" "}
                   <span className="text-roam-blue">Provider Portal</span>
