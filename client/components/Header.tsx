@@ -3,6 +3,8 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { EdgeNotificationCenter } from "@/components/EdgeNotificationCenter";
+import { CustomerDropdown } from "@/components/CustomerDropdown";
+import { CustomerSignInButton } from "@/components/CustomerSignInButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSystemConfig } from "@/hooks/useSystemConfig";
 
@@ -10,7 +12,8 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, customer } = useAuth();
   const { siteLogo } = useSystemConfig();
-  const isAuthenticated = user || customer;
+  const isProvider = !!user;
+  const isCustomer = !!customer;
 
   return (
     <nav className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
@@ -40,17 +43,33 @@ export function Header() {
             >
               Become a Provider
             </Link>
-            {isAuthenticated && <EdgeNotificationCenter />}
-            <Button
-              asChild
-              variant="outline"
-              className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-            >
-              <Link to="/provider-portal">Sign In</Link>
-            </Button>
-            <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-              <Link to="/provider-portal?tab=signup">Get Started</Link>
-            </Button>
+            {isProvider && <EdgeNotificationCenter />}
+
+            {/* Customer Authentication */}
+            {isCustomer ? (
+              <CustomerDropdown />
+            ) : (
+              <CustomerSignInButton
+                variant="outline"
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+              />
+            )}
+
+            {/* Provider Authentication - only show if not a customer */}
+            {!isCustomer && (
+              <>
+                <Button
+                  asChild
+                  variant="outline"
+                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                >
+                  <Link to="/provider-portal">Provider Sign In</Link>
+                </Button>
+                <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
+                  <Link to="/provider-portal?tab=signup">Provider Sign Up</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -80,16 +99,31 @@ export function Header() {
                 Become a Provider
               </Link>
               <div className="flex flex-col space-y-2 pt-4">
-                <Button
-                  asChild
-                  variant="outline"
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                >
-                  <Link to="/provider-portal">Sign In</Link>
-                </Button>
-                <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-                  <Link to="/provider-portal?tab=signup">Get Started</Link>
-                </Button>
+                {/* Customer Authentication */}
+                {isCustomer ? (
+                  <CustomerDropdown className="justify-start" />
+                ) : (
+                  <CustomerSignInButton
+                    variant="outline"
+                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white justify-start"
+                  />
+                )}
+
+                {/* Provider Authentication - only show if not a customer */}
+                {!isCustomer && (
+                  <>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+                    >
+                      <Link to="/provider-portal">Provider Sign In</Link>
+                    </Button>
+                    <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
+                      <Link to="/provider-portal?tab=signup">Provider Sign Up</Link>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
           </div>
