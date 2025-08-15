@@ -931,10 +931,17 @@ export default function ProviderOnboarding() {
                       >
                         I have read and agree to the{" "}
                         <Button
+                          asChild
                           variant="link"
                           className="p-0 h-auto text-roam-blue"
                         >
-                          Privacy Policy
+                          <a
+                            href="https://app.termly.io/policy-viewer/policy.html?policyUUID=64dec2e3-d030-4421-86ff-a3e7864709d8"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Privacy Policy
+                          </a>
                         </Button>{" "}
                         and consent to the processing of my personal data for
                         verification purposes.
