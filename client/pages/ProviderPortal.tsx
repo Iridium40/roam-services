@@ -350,7 +350,7 @@ export default function ProviderPortal() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             {/* Left Side - Benefits */}
             <div className="space-y-8">
-              <div>
+              <div className="text-center lg:text-left">
                 <h1 className="text-3xl sm:text-4xl font-bold mb-4">
                   Welcome to the{" "}
                   <span className="text-roam-blue">Provider Portal</span>
