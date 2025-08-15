@@ -361,7 +361,7 @@ export default function ProviderPortal() {
             </div>
 
             {/* Right Side - Auth Forms */}
-            <div className="w-full max-w-md mx-auto lg:mx-0">
+            <div className="w-full max-w-md mx-auto">
               <Card className="border-border/50 shadow-lg">
                 <CardHeader className="text-center pb-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
