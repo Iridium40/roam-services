@@ -45,6 +45,7 @@ import Payment from "./pages/Payment";
 import BookingSuccess from "./pages/BookingSuccess";
 import SignIn from "./pages/SignIn";
 import Blog from "./pages/Blog";
+import FAQ from "./pages/FAQ";
 import PlaidTest from "./pages/PlaidTest";
 
 const queryClient = new QueryClient();
