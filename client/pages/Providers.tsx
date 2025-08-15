@@ -257,8 +257,8 @@ export default function Providers() {
             Ready to Start Earning More?
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join hundreds of successful providers who've grown their business
-            with ROAM. Application takes less than 10 minutes.
+            Join with successful providers who've grown their business with
+            ROAM. Application takes less than 10 minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
