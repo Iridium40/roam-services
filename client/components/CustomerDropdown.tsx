@@ -31,6 +31,14 @@ export function CustomerDropdown({ className = "" }: CustomerDropdownProps) {
 
   if (!customer) return null;
 
+  // Debug customer data
+  console.log("CustomerDropdown - customer data:", {
+    firstName: customer.firstName,
+    lastName: customer.lastName,
+    email: customer.email,
+    imageUrl: customer.imageUrl
+  });
+
   const handleSignOut = async () => {
     try {
       await signOut();
