@@ -117,7 +117,7 @@ export default function Providers() {
                 with quality clients, set your own rates, and build your
                 business with the support you deserve.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <div className="flex justify-center mb-12">
                 <Button
                   asChild
                   size="lg"
@@ -127,17 +127,6 @@ export default function Providers() {
                     <Users className="w-5 h-5 mr-2" />
                     Apply Now
                     <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white text-lg px-8 py-6"
-                >
-                  <Link to="/provider-portal">
-                    <Calendar className="w-5 h-5 mr-2" />
-                    Learn More
                   </Link>
                 </Button>
               </div>
