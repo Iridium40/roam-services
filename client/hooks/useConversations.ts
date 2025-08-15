@@ -48,9 +48,33 @@ export interface Conversation {
 export const useConversations = () => {
   const { user, customer, userType } = useAuth();
   const { toast } = useToast();
-  
+
   // Get the current user data (either provider or customer)
   const currentUser = user || customer;
+
+  // Helper function to safely handle fetch responses
+  const safeFetch = async (url: string, options: RequestInit) => {
+    try {
+      const response = await fetch(url, options);
+
+      // Clone the response to avoid "body stream already read" errors
+      const responseClone = response.clone();
+
+      if (!response.ok) {
+        const errorText = await responseClone.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+
+      const result = await response.json();
+      return result;
+    } catch (error: any) {
+      // Re-throw with additional context
+      if (error.message?.includes('body stream already read')) {
+        throw new Error('Network request failed - please try again');
+      }
+      throw error;
+    }
+  };
   
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = useState<string | null>(null);
