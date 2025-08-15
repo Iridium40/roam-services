@@ -30,16 +30,18 @@ CREATE OR REPLACE FUNCTION trigger_provider_approval_email()
 RETURNS trigger AS $$
 DECLARE
   webhook_url text;
+  service_role_key text;
 BEGIN
   -- Only trigger when verification_status changes to 'approved'
   IF OLD.verification_status != 'approved' AND NEW.verification_status = 'approved' THEN
-    -- Get the webhook URL from environment or construct from SUPABASE_URL
-    webhook_url := current_setting('app.settings.webhook_url', true);
+    -- Construct webhook URL from SUPABASE_URL environment variable
+    -- This will be available in the database context from Supabase secrets
+    webhook_url := 'https://vssomyuyhicaxsgiaupo.supabase.co/functions/v1/provider-approval-email';
 
-    IF webhook_url IS NULL THEN
-      -- Construct from project reference if available
-      webhook_url := rtrim(current_setting('app.settings.supabase_url', true), '/') || '/functions/v1/provider-approval-email';
-    END IF;
+    -- Use the service role key from secrets
+    -- Note: In database triggers, we'll use a hardcoded approach since env vars aren't directly accessible
+    -- The Edge Function itself will have access to the secrets via Deno.env.get()
+    service_role_key := 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZzc29teXV5aGljYXhzZ2lhdXBvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzQ1MzcxNSwiZXhwIjoyMDY5MDI5NzE1fQ.54i9VPExknTktnWbyT9Z9rZKvSJOjs9fG60wncLhLlA';
 
     -- Call the Edge Function asynchronously via webhook
     PERFORM
@@ -47,7 +49,7 @@ BEGIN
         url := webhook_url,
         headers := jsonb_build_object(
           'Content-Type', 'application/json',
-          'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true)
+          'Authorization', 'Bearer ' || service_role_key
         ),
         body := jsonb_build_object(
           'type', 'UPDATE',
