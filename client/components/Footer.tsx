@@ -64,7 +64,7 @@ export function Footer() {
               </li>
               <li>
                 <a href="#" className="hover:text-roam-blue transition-colors">
-                  Home Services
+                  IV Therapy
                 </a>
               </li>
               <li>
