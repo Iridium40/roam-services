@@ -731,6 +731,20 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-border/50 mt-8 pt-8 text-center text-foreground/60">
+            <div className="flex justify-center space-x-6 mb-4">
+              <a
+                href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-roam-blue transition-colors"
+              >
+                Terms & Conditions
+              </a>
+              <span>•</span>
+              <a href="/privacy" className="hover:text-roam-blue transition-colors">
+                Privacy Policy
+              </a>
+            </div>
             <p>
               &copy; 2024 ROAM. All rights reserved. Connecting you with
               professional services.
