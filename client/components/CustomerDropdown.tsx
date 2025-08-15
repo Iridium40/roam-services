@@ -43,7 +43,10 @@ export function CustomerDropdown({ className = "" }: CustomerDropdownProps) {
   const getInitials = () => {
     const firstName = customer.firstName || "";
     const lastName = customer.lastName || "";
-    return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+    const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+
+    // Fallback to 'CU' (Customer User) if no names available
+    return initials || "CU";
   };
 
   return (
