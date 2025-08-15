@@ -62,16 +62,16 @@ export function CustomerDropdown({ className = "" }: CustomerDropdownProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className={`flex items-center space-x-2 ${className}`}>
           <Avatar className="w-8 h-8">
-            <AvatarImage 
-              src={customer.imageUrl || ""} 
-              alt={`${customer.firstName} ${customer.lastName}`}
+            <AvatarImage
+              src={customer.image_url || ""}
+              alt={`${customer.first_name} ${customer.last_name}`}
             />
             <AvatarFallback className="bg-roam-blue text-white text-sm">
               {getInitials()}
             </AvatarFallback>
           </Avatar>
           <span className="hidden md:inline text-sm font-medium">
-            {customer.firstName || "Customer"}
+            {customer.first_name || "Customer"}
           </span>
           <ChevronDown className="w-4 h-4" />
         </Button>
