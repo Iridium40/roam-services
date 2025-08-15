@@ -1,10 +1,10 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+// Provider approval email - Sends notification when business is approved
+import { createClient } from "npm:@supabase/supabase-js@2.38.4";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+};
 
 interface WebhookPayload {
   type: 'UPDATE'
@@ -15,7 +15,9 @@ interface WebhookPayload {
   timestamp: string
 }
 
-serve(async (req) => {
+console.info('Provider approval email function initialized');
+
+Deno.serve(async (req: Request) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
@@ -23,16 +25,16 @@ serve(async (req) => {
 
   try {
     console.log('Provider approval email function triggered')
-    
+
     const payload: WebhookPayload = await req.json()
     console.log('Webhook payload:', JSON.stringify(payload, null, 2))
 
     // Only process business_profiles table updates
     if (payload.table !== 'business_profiles') {
       console.log('Ignoring webhook for table:', payload.table)
-      return new Response('OK', { 
-        status: 200, 
-        headers: corsHeaders 
+      return new Response('OK', {
+        status: 200,
+        headers: corsHeaders
       })
     }
 
@@ -42,22 +44,27 @@ serve(async (req) => {
     // Only trigger email when status changes from non-approved to approved
     if (oldStatus !== 'approved' && newStatus === 'approved') {
       console.log('Business approved! Sending email notification...')
-      
+
       const businessId = payload.record.id
       const businessName = payload.record.business_name
       const contactEmail = payload.record.contact_email
-      
+
       if (!contactEmail) {
         console.error('No contact email found for business:', businessId)
-        return new Response('No contact email', { 
-          status: 400, 
-          headers: corsHeaders 
+        return new Response('No contact email', {
+          status: 400,
+          headers: corsHeaders
         })
       }
 
       // Initialize Supabase client
-      const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-      const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      const supabaseUrl = Deno.env.get('SUPABASE_URL')
+      const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+
+      if (!supabaseUrl || !supabaseServiceKey) {
+        throw new Error('Missing Supabase credentials')
+      }
+
       const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
       // Update the approved_at timestamp
@@ -75,10 +82,10 @@ serve(async (req) => {
       })
 
       console.log('Approval email sent successfully')
-      
-      return new Response(JSON.stringify({ 
-        success: true, 
-        message: 'Approval email sent' 
+
+      return new Response(JSON.stringify({
+        success: true,
+        message: 'Approval email sent'
       }), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -86,16 +93,16 @@ serve(async (req) => {
     }
 
     console.log('Status change does not require email notification')
-    return new Response('OK', { 
-      status: 200, 
-      headers: corsHeaders 
+    return new Response('OK', {
+      status: 200,
+      headers: corsHeaders
     })
 
   } catch (error) {
     console.error('Error in provider approval email function:', error)
-    return new Response(JSON.stringify({ 
+    return new Response(JSON.stringify({
       error: 'Internal server error',
-      message: error.message 
+      message: error.message
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }
