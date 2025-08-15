@@ -37,7 +37,12 @@ import { useAuth } from "@/contexts/AuthContext";
 export default function ProviderPortal() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("login");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(() => {
+    // Default to "signup" tab if coming from "Get Started" button or if tab=signup is in URL
+    const tabParam = searchParams.get("tab");
+    return tabParam === "signup" || tabParam === "register" ? "signup" : "login";
+  });
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { signIn } = useAuth();
