@@ -300,6 +300,29 @@ export default function About() {
         </div>
       </section>
 
+      {/* FAQ Section */}
+      <section className="py-16 max-w-4xl mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            Frequently Asked Questions
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Find answers to common questions about ROAM services and membership.
+          </p>
+        </div>
+
+        <FAQAccordion />
+
+        <div className="text-center mt-8">
+          <Link to="/faq">
+            <Button variant="outline" className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white">
+              View All FAQs
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </Link>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-16 bg-gradient-to-r from-roam-blue to-roam-light-blue text-white">
         <div className="max-w-4xl mx-auto px-4 text-center">
