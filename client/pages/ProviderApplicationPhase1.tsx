@@ -659,7 +659,16 @@ export default function ProviderApplicationPhase1() {
                         }
                       />
                       <Label htmlFor="termsAccepted" className="text-sm leading-relaxed">
-                        I agree to the ROAM Terms of Service and understand the platform policies for providers.
+                        I agree to the ROAM{" "}
+                        <a
+                          href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-roam-blue hover:underline"
+                        >
+                          Terms & Conditions
+                        </a>{" "}
+                        and understand the platform policies for providers.
                       </Label>
                     </div>
 
