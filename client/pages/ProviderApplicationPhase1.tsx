@@ -626,8 +626,8 @@ export default function ProviderApplicationPhase1() {
       case 1:
         return !!(formData.firstName && formData.lastName && formData.email && formData.phone);
       case 2:
-        return !!(formData.businessName && formData.businessType && formData.businessDescription && 
-                 formData.serviceAreas.length > 0 && formData.servicesOffered.length > 0);
+        return !!(formData.businessName && formData.businessType && formData.businessDescription &&
+                 formData.servicesOffered.length > 0);
       case 3:
         return !!(formData.professionalLicense && formData.liabilityInsurance);
       case 4:
