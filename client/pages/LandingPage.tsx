@@ -749,6 +749,15 @@ export default function LandingPage() {
               >
                 Privacy Policy
               </a>
+              <span>•</span>
+              <a
+                href="https://app.termly.io/policy-viewer/policy.html?policyUUID=f7401bab-92b4-49f6-b887-ba0e7a03a16a"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-roam-blue transition-colors"
+              >
+                Cookie Policy
+              </a>
             </div>
             <p>
               &copy; 2024 ROAM. All rights reserved. Connecting you with
