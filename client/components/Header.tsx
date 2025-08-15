@@ -78,39 +78,23 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-4">
+              {/* Customer Authentication */}
+              {isCustomer ? (
+                <CustomerDropdown className="justify-start" />
+              ) : (
+                <CustomerSignInButton
+                  variant="outline"
+                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white justify-start"
+                />
+              )}
+
+              {/* Become a Provider link */}
               <Link
                 to="/providers"
                 className="text-foreground/70 hover:text-roam-blue transition-colors"
               >
                 Become a Provider
               </Link>
-              <div className="flex flex-col space-y-2 pt-4">
-                {/* Customer Authentication */}
-                {isCustomer ? (
-                  <CustomerDropdown className="justify-start" />
-                ) : (
-                  <CustomerSignInButton
-                    variant="outline"
-                    className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white justify-start"
-                  />
-                )}
-
-                {/* Provider Authentication - only show if not a customer */}
-                {!isCustomer && (
-                  <>
-                    <Button
-                      asChild
-                      variant="outline"
-                      className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                    >
-                      <Link to="/provider-portal">Provider Sign In</Link>
-                    </Button>
-                    <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-                      <Link to="/provider-portal?tab=signup">Provider Sign Up</Link>
-                    </Button>
-                  </>
-                )}
-              </div>
             </div>
           </div>
         )}
