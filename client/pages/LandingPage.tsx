@@ -335,7 +335,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-roam-light-blue/5 to-roam-yellow/10">
       {/* Google One Tap - only show when not authenticated */}
-      {!isCustomer && import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+      {false && !isCustomer && import.meta.env.VITE_GOOGLE_CLIENT_ID && (
         <GoogleOneTap
           clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
           onSuccess={() => {
