@@ -214,69 +214,6 @@ export default function Providers() {
         </div>
       </section>
 
-      {/* Earnings Potential */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              <span className="text-roam-blue">Earning Potential</span> by
-              Service
-            </h2>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              See what providers in your field are earning on the ROAM platform.
-            </p>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-roam-blue" />
-                  Florida Provider Earnings (2024)
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {earnings.map((earning, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 rounded-lg bg-accent/20 hover:bg-accent/30 transition-colors"
-                    >
-                      <div className="flex-1">
-                        <div className="font-semibold">{earning.service}</div>
-                        <div className="text-sm text-foreground/60">
-                          Per hour, before taxes
-                        </div>
-                      </div>
-                      <div className="text-center mx-4">
-                        <div className="text-lg font-bold text-roam-blue">
-                          {earning.range}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge
-                          variant={
-                            earning.demand === "Very High"
-                              ? "default"
-                              : "secondary"
-                          }
-                          className={
-                            earning.demand === "Very High"
-                              ? "bg-roam-success text-white"
-                              : ""
-                          }
-                        >
-                          {earning.demand} Demand
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* Requirements Section */}
       <section className="py-20 bg-background/50">
