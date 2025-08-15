@@ -47,6 +47,7 @@ import SignIn from "./pages/SignIn";
 import Blog from "./pages/Blog";
 import FAQ from "./pages/FAQ";
 import PartnerFAQ from "./pages/PartnerFAQ";
+import PartnerNDAPage from "./pages/PartnerNDAPage";
 import PlaidTest from "./pages/PlaidTest";
 
 const queryClient = new QueryClient();
