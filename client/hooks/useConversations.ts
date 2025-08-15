@@ -117,8 +117,8 @@ export const useConversations = () => {
         participants
       };
       console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
-      
-      const response = await fetch('/api/twilio-conversations', {
+
+      const result = await safeFetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -126,8 +126,6 @@ export const useConversations = () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log('📥 Response status:', response.status);
-      const result = await response.json();
       console.log('📥 Response result:', result);
       
       if (!result.success) {
@@ -458,7 +456,7 @@ export const useConversations = () => {
     if (conversationSid) {
       // Call these functions directly to avoid dependency issues
       const loadMessagesDirectly = async () => {
-        console.log('📨 Loading messages for conversation:', conversationSid);
+        console.log('��� Loading messages for conversation:', conversationSid);
         try {
           setLoading(true);
           setError(null);
