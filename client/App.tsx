@@ -50,6 +50,7 @@ import SignIn from "./pages/SignIn";
 import Blog from "./pages/Blog";
 import FAQ from "./pages/FAQ";
 import PartnerFAQ from "./pages/PartnerFAQ";
+import PartnerNews from "./pages/PartnerNews";
 import PartnerNDAPage from "./pages/PartnerNDAPage";
 import ProviderCodeOfConductPage from "./pages/ProviderCodeOfConductPage";
 import PlaidTest from "./pages/PlaidTest";
