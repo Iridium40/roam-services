@@ -135,6 +135,16 @@ export function Footer() {
                   Privacy Policy
                 </a>
               </li>
+              <li>
+                <a
+                  href="https://app.termly.io/policy-viewer/policy.html?policyUUID=f7401bab-92b4-49f6-b887-ba0e7a03a16a"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-roam-blue transition-colors"
+                >
+                  Cookie Policy
+                </a>
+              </li>
             </ul>
           </div>
         </div>
