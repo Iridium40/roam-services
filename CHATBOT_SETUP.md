@@ -106,8 +106,9 @@ App
 1. User clicks floating chat button
 2. ChatbotProvider loads user data from Supabase
 3. User sends message
-4. Context + user data sent to Claude.ai
-5. AI response displayed with user-specific actions
+4. Message + context + user data sent to `/api/chatbot`
+5. Vercel AI Gateway processes request with Claude-3.5-sonnet
+6. AI response displayed with user-specific actions
 
 ## Deployment Considerations
 
