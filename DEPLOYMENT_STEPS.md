@@ -26,13 +26,19 @@ npm install ai @ai-sdk/anthropic
 
 ## 🎯 Next Steps (For You to Complete)
 
-### 1. Enable AI Gateway in Vercel
+### 1. Set Environment Variables in Vercel
 1. Go to your **Vercel project dashboard**
+2. Navigate to **Settings → Environment Variables**
+3. Add: `AI_GATEWAY_API_KEY` = `AMk4EoHhZgcmtuALLZHerMNH`
+4. Set for: **Production, Preview, and Development**
+
+### 2. Enable AI Gateway in Vercel
+1. Still in your Vercel project dashboard
 2. Navigate to **Settings → Integrations**
 3. Find **"AI Gateway"** and click **Enable**
-4. **No API keys needed** - Vercel handles everything automatically!
+4. API key will enhance access and features
 
-### 2. Deploy to Production
+### 3. Deploy to Production
 ```bash
 git add .
 git commit -m "Add Vercel AI Gateway for ROAM chatbot"
