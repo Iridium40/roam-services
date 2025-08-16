@@ -10,8 +10,9 @@ npm install ai @ai-sdk/anthropic
 ### 2. ✅ Created API Route
 - **File**: `api/chatbot/route.ts`
 - **Purpose**: Handles AI requests through Vercel AI Gateway with streaming
-- **Model**: Claude-3.5-sonnet-20241022
+- **Model**: Claude-4-sonnet (latest and most capable model)
 - **Feature**: Real-time streaming responses
+- **API Key**: Optional AI Gateway API key support
 
 ### 3. ✅ Updated Chatbot Components
 - **ChatbotContext**: Now uses `/api/chatbot` instead of direct Claude API
