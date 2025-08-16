@@ -89,23 +89,20 @@ export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) =>
     isPremiumUser: currentUser?.subscription_tier === 'premium' || false,
   };
 
-  // Check Claude.ai connection status
+  // Check AI Gateway connection status
   const checkConnection = async () => {
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const response = await fetch('/api/chatbot', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.VITE_CLAUDE_API_KEY || '',
-          'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-3-sonnet-20240229',
-          max_tokens: 10,
-          messages: [{ role: 'user', content: 'test' }]
+          message: 'test',
+          userContext: { userId: 'test', userType: 'customer', isAuthenticated: false }
         })
       });
-      setIsConnected(response.status === 200 || response.status === 400); // 400 is expected for test
+      setIsConnected(response.ok);
     } catch {
       setIsConnected(false);
     }
