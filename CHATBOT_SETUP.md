@@ -113,18 +113,18 @@ App
 ## Deployment Considerations
 
 ### Environment Variables:
-- Ensure `VITE_CLAUDE_API_KEY` is set in production
-- Use different API keys for development/production
+- **No environment variables needed!** Vercel AI Gateway handles everything
+- Automatic scaling and optimization
 
 ### API Limits:
-- Claude.ai has rate limits - monitor usage
-- Implement fallback responses for API failures
-- Consider caching frequently requested data
+- Vercel AI Gateway handles rate limits automatically
+- Built-in fallback responses for API failures
+- Global optimization and caching included
 
 ### Security:
-- API key is exposed in client (standard for Vite)
-- Implement proper CORS and rate limiting
-- Monitor API usage for abuse
+- **No API keys to manage** - Vercel handles security
+- Built-in CORS and rate limiting
+- Automatic abuse protection
 
 ## Troubleshooting
 
