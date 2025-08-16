@@ -75,10 +75,11 @@ const response = await fetch('/api/chatbot', {
 });
 ```
 
-## 🎉 Benefits of Vercel AI Gateway
+## ��� Benefits of Claude-4-sonnet + Vercel AI Gateway
 
-- **🔑 No API Key Management** - Vercel handles authentication
-- **⚡ Automatic Optimization** - Global edge caching and routing
+- **🧠 Claude-4-sonnet** - Anthropic's most capable and intelligent model
+- **⚡ Streaming Responses** - Real-time text generation for better UX
+- **🔑 Enhanced Access** - Optional API key for premium features
 - **🛡️ Built-in Security** - Rate limiting and abuse protection
 - **📊 Usage Analytics** - Monitor usage through Vercel dashboard
 - **🔄 Automatic Fallbacks** - Handles API failures gracefully
