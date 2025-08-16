@@ -23,7 +23,7 @@ client/
 │   ├── ChatBot.tsx               # Main chatbot modal component
 │   └── FloatingChatBot.tsx       # Floating chat button
 ├── contexts/
-│   └── ChatbotContext.tsx        # Chatbot state management
+│   └��─ ChatbotContext.tsx        # Chatbot state management
 └── App.tsx                       # Updated with ChatbotProvider
 ```
 
@@ -31,6 +31,7 @@ client/
 
 ### 🤖 AI Integration
 - **Vercel AI Gateway** - Uses Anthropic's Claude-3.5-sonnet model via Vercel
+- **Streaming Responses** - Real-time text streaming for better UX
 - **Smart Context Awareness** - Knows user type (customer/provider/owner/admin)
 - **Real-time Data Access** - Fetches user data from Supabase
 - **Role-based Responses** - Tailored responses based on user role
