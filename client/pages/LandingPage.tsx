@@ -356,7 +356,6 @@ export default function LandingPage() {
                 alt="ROAM - Your Best Life. Everywhere."
                 className="h-10 w-auto"
               />
-              <span className="text-2xl font-semibold text-roam-blue">Services</span>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
               <a
