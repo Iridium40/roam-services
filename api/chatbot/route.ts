@@ -1,7 +1,7 @@
 // Create this file: api/chatbot/route.ts
-// This is the complete API route using Vercel AI Gateway
+// This is the complete API route using Vercel AI Gateway with streaming
 
-import { generateText } from 'ai';
+import { streamText } from 'ai';
 import { anthropic } from '@ai-sdk/anthropic';
 
 export async function POST(request: Request) {
@@ -16,8 +16,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // Use Vercel AI Gateway (no API keys needed!)
-    const { text } = await generateText({
+    // Use Vercel AI Gateway with streaming (no API keys needed!)
+    const result = streamText({
       model: anthropic('claude-3-5-sonnet-20241022'),
       prompt: `You are the ROAM AI Assistant with access to user account data.
 
@@ -46,14 +46,12 @@ Respond as the ROAM AI Assistant.`,
       temperature: 0.7,
     });
 
-    return Response.json({
-      response: text,
-      success: true
-    });
+    // Return the streaming response
+    return result.toDataStreamResponse();
 
   } catch (error) {
     console.error('AI Gateway error:', error);
-    
+
     return Response.json({
       response: "I'm having trouble right now, but I can still help with your ROAM account! Try asking about your bookings, earnings, or schedule.",
       success: true,
