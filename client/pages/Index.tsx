@@ -793,8 +793,8 @@ export default function Index() {
       {/* Announcement Popup */}
       <AnnouncementPopup isCustomer={isCustomer} />
       {/* Google One Tap - only show when not authenticated */}
-      {/* Google One Tap - enabled for Google OAuth */}
-      {!isCustomer && import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+      {/* Google One Tap - temporarily disabled due to origin configuration */}
+      {false && !isCustomer && import.meta.env.VITE_GOOGLE_CLIENT_ID && (
         <GoogleOneTap
           clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
           onSuccess={() => {

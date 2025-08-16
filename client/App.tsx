@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { ChatbotProvider } from "@/contexts/ChatbotContext";
 import { ProtectedRoute, RoleBasedRedirect } from "@/components/ProtectedRoute";
 import SystemBrandingInitializer from "@/components/SystemBrandingInitializer";
 
@@ -26,6 +27,9 @@ import MyBookings from "./pages/MyBookings";
 import ProviderPortal from "./pages/ProviderPortal";
 import ProviderDashboard from "./pages/ProviderDashboard";
 import ProviderOnboarding from "./pages/ProviderOnboarding";
+import ProviderApplicationPhase1 from "./pages/ProviderApplicationPhase1";
+import ProviderApplicationPhase2 from "./pages/ProviderApplicationPhase2";
+import ProviderApplicationThankYou from "./pages/ProviderApplicationThankYou";
 import ProviderProfile from "./pages/ProviderProfile";
 import ProviderBooking from "./pages/ProviderBooking";
 import ProviderDocumentVerification from "./pages/ProviderDocumentVerification";
@@ -45,7 +49,13 @@ import Payment from "./pages/Payment";
 import BookingSuccess from "./pages/BookingSuccess";
 import SignIn from "./pages/SignIn";
 import Blog from "./pages/Blog";
+import FAQ from "./pages/FAQ";
+import PartnerFAQ from "./pages/PartnerFAQ";
+import PartnerNews from "./pages/PartnerNews";
+import PartnerNDAPage from "./pages/PartnerNDAPage";
+import ProviderCodeOfConductPage from "./pages/ProviderCodeOfConductPage";
 import PlaidTest from "./pages/PlaidTest";
+import FloatingChatBot from "./components/FloatingChatBot";
 
 const queryClient = new QueryClient();
 
@@ -57,185 +67,210 @@ const App = () => (
       <SystemBrandingInitializer />
       <BrowserRouter>
         <AuthProvider>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/home" element={<Index />} />
-            <Route path="/providers" element={<Providers />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/support" element={<Support />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/provider-portal" element={<ProviderPortal />} />
-            <Route path="/plaid-test" element={<PlaidTest />} />
-            <Route
-              path="/provider-document-verification"
-              element={<ProviderDocumentVerification />}
-            />
+          <ChatbotProvider>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/home" element={<Index />} />
+              <Route path="/providers" element={<Providers />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/faq" element={<FAQ />} />
+              <Route path="/partner-faq" element={<PartnerFAQ />} />
+              <Route path="/partner-news" element={<PartnerNews />} />
+              <Route path="/partner-nda" element={<PartnerNDAPage />} />
+              <Route path="/provider-code-of-conduct" element={<ProviderCodeOfConductPage />} />
+              <Route path="/support" element={<Support />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/sign-in" element={<SignIn />} />
+              <Route path="/provider-portal" element={<ProviderPortal />} />
+              <Route path="/plaid-test" element={<PlaidTest />} />
+              <Route
+                path="/provider-document-verification"
+                element={<ProviderDocumentVerification />}
+              />
 
-            {/* Protected routes - any authenticated provider */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <RoleBasedRedirect />
-                </ProtectedRoute>
-              }
-            />
+              {/* Protected routes - any authenticated provider */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <RoleBasedRedirect />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Owner-specific routes */}
-            <Route
-              path="/owner/dashboard"
-              element={
-                <ProtectedRoute allowedRoles={["owner"]}>
-                  <ProviderDashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* Owner-specific routes */}
+              <Route
+                path="/owner/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={["owner"]}>
+                    <ProviderDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Dispatcher-specific routes */}
-            <Route
-              path="/dispatcher/dashboard"
-              element={
-                <ProtectedRoute allowedRoles={["owner", "dispatcher"]}>
-                  <ProviderDashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* Dispatcher-specific routes */}
+              <Route
+                path="/dispatcher/dashboard"
+                element={
+                  <ProtectedRoute allowedRoles={["owner", "dispatcher"]}>
+                    <ProviderDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Provider-specific routes */}
-            <Route
-              path="/provider/dashboard"
-              element={
-                <ProtectedRoute
-                  allowedRoles={["owner", "dispatcher", "provider"]}
-                >
-                  <ProviderDashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* Provider-specific routes */}
+              <Route
+                path="/provider/dashboard"
+                element={
+                  <ProtectedRoute
+                    allowedRoles={["owner", "dispatcher", "provider"]}
+                  >
+                    <ProviderDashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Legacy route redirects */}
-            <Route
-              path="/provider-dashboard"
-              element={
-                <ProtectedRoute>
-                  <RoleBasedRedirect />
-                </ProtectedRoute>
-              }
-            />
+              {/* Legacy route redirects */}
+              <Route
+                path="/provider-dashboard"
+                element={
+                  <ProtectedRoute>
+                    <RoleBasedRedirect />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Business management - owner only */}
-            <Route
-              path="/business-management"
-              element={
-                <ProtectedRoute allowedRoles={["owner"]}>
-                  <BusinessManagement />
-                </ProtectedRoute>
-              }
-            />
+              {/* Business management - owner only */}
+              <Route
+                path="/business-management"
+                element={
+                  <ProtectedRoute allowedRoles={["owner"]}>
+                    <BusinessManagement />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* General protected routes */}
-            <Route
-              path="/my-bookings"
-              element={
-                <ProtectedRoute>
-                  <MyBookings />
-                </ProtectedRoute>
-              }
-            />
+              {/* General protected routes */}
+              <Route
+                path="/my-bookings"
+                element={
+                  <ProtectedRoute>
+                    <MyBookings />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Customer-specific routes */}
-            <Route
-              path="/customer/bookings"
-              element={
-                <ProtectedRoute redirectTo="/sign-in">
-                  <MyBookings />
-                </ProtectedRoute>
-              }
-            />
+              {/* Customer-specific routes */}
+              <Route
+                path="/customer/bookings"
+                element={
+                  <ProtectedRoute redirectTo="/sign-in">
+                    <MyBookings />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/customer/profile"
-              element={
-                <ProtectedRoute redirectTo="/sign-in">
-                  <CustomerProfile />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/customer/profile"
+                element={
+                  <ProtectedRoute redirectTo="/sign-in">
+                    <CustomerProfile />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/customer/settings"
-              element={
-                <ProtectedRoute redirectTo="/sign-in">
-                  <CustomerSettings />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/customer/settings"
+                element={
+                  <ProtectedRoute redirectTo="/sign-in">
+                    <CustomerSettings />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/customer/transactions"
-              element={
-                <ProtectedRoute redirectTo="/sign-in">
-                  <CustomerTransactions />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/customer/transactions"
+                element={
+                  <ProtectedRoute redirectTo="/sign-in">
+                    <CustomerTransactions />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/customer/favorites"
-              element={
-                <ProtectedRoute redirectTo="/sign-in">
-                  <CustomerFavorites />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/customer/favorites"
+                element={
+                  <ProtectedRoute redirectTo="/sign-in">
+                    <CustomerFavorites />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/customer/locations"
-              element={
-                <ProtectedRoute redirectTo="/sign-in">
-                  <CustomerLocations />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/customer/locations"
+                element={
+                  <ProtectedRoute redirectTo="/sign-in">
+                    <CustomerLocations />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route
-              path="/provider-onboarding"
-              element={
-                <ProtectedRoute>
-                  <ProviderOnboarding />
-                </ProtectedRoute>
-              }
-            />
+              <Route
+                path="/provider-onboarding"
+                element={
+                  <ProtectedRoute>
+                    <ProviderOnboarding />
+                  </ProtectedRoute>
+                }
+              />
 
-            <Route path="/provider/:providerId" element={<ProviderProfile />} />
+              {/* New Two-Phase Provider Application Routes */}
+              <Route
+                path="/provider-application/phase1"
+                element={<ProviderApplicationPhase1 />}
+              />
 
-            <Route path="/book/:businessId" element={<ProviderBooking />} />
+              <Route
+                path="/provider-application/phase2"
+                element={<ProviderApplicationPhase2 />}
+              />
 
-            <Route path="/business/:businessId" element={<BusinessProfile />} />
+              <Route
+                path="/provider-application/thank-you"
+                element={<ProviderApplicationThankYou />}
+              />
 
-            {/* Booking Flow Routes */}
-            <Route
-              path="/book-service/:serviceId"
-              element={<ServiceBookingFlow />}
-            />
-            <Route
-              path="/book-service/:serviceId/businesses"
-              element={<BusinessAvailability />}
-            />
-            <Route
-              path="/business/:businessId/book-service"
-              element={<BusinessServiceBooking />}
-            />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/booking-success" element={<BookingSuccess />} />
+              <Route path="/provider/:providerId" element={<ProviderProfile />} />
 
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+              <Route path="/book/:businessId" element={<ProviderBooking />} />
+
+              <Route path="/business/:businessId" element={<BusinessProfile />} />
+
+              {/* Booking Flow Routes */}
+              <Route
+                path="/book-service/:serviceId"
+                element={<ServiceBookingFlow />}
+              />
+              <Route
+                path="/book-service/:serviceId/businesses"
+                element={<BusinessAvailability />}
+              />
+              <Route
+                path="/business/:businessId/book-service"
+                element={<BusinessServiceBooking />}
+              />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/payment" element={<Payment />} />
+              <Route path="/booking-success" element={<BookingSuccess />} />
+
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            {/* Floating AI Assistant - appears on all pages */}
+            <FloatingChatBot />
+          </ChatbotProvider>
         </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>

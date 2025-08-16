@@ -15,44 +15,64 @@ import {
   TrendingUp,
   MapPin,
   Clock,
+  Settings,
+  CreditCard,
+  Megaphone,
+  BarChart3,
+  ShieldCheck,
+  Heart,
 } from "lucide-react";
 
 export default function Providers() {
   const benefits = [
     {
-      icon: DollarSign,
-      title: "Competitive Earnings",
+      icon: Settings,
+      title: "Your schedule. Your way.",
       description:
-        "Keep everything you charge customers. Only payout transaction fees apply.",
-      highlight: "$50-200/hour average",
-    },
-    {
-      icon: Calendar,
-      title: "Flexible Schedule",
-      description:
-        "Work when you want, where you want. Set your own availability and rates.",
+        "You set your availability. You approve your bookings. You are in control.",
       highlight: "100% control",
     },
     {
-      icon: Users,
-      title: "Quality Clients",
+      icon: CreditCard,
+      title: "Easy Earning. Upfront Payments.",
       description:
-        "Connect with verified customers who value premium services.",
-      highlight: "Pre-screened customers",
+        "You set your own rates, we handle the rest. Payments secured via the app prior to the service ensuring you are paid for your bookings. Members can also tip via the app, post service.",
+      highlight: "Guaranteed payment",
     },
     {
-      icon: Shield,
-      title: "Full Support",
+      icon: Megaphone,
+      title: "We'll do the Marketing for You.",
       description:
-        "Comprehensive insurance coverage, background verification, and 24/7 support.",
-      highlight: "Protected & supported",
+        "Access to a growing community of travelers and wellness-focused clientele specifically looking for the services you provide.",
+      highlight: "Quality clientele",
+    },
+    {
+      icon: BarChart3,
+      title: "Independent Growth. Team Support.",
+      description:
+        "Utilizing real-time app data tools, you can increase your bookings and visibility. No more managing cancellations, refunds, or re-bookings. All growth, no hassle.",
+      highlight: "Hassle-free growth",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Safety in Service.",
+      description:
+        "In-app check-in/check-out system time stamps your service arrival and departure. 24-hour live partner service rep for any assistance needed. Service area selection assures confidence in location safety for mobile providers.",
+      highlight: "24/7 support",
+    },
+    {
+      icon: Heart,
+      title: "Thriving Provider Community.",
+      description:
+        "Connect with like-minded professionals who share best practices, celebrate wins, and support each other's growth. From mentorship opportunities to exclusive networking events, you're never alone on your journey.",
+      highlight: "Collaborative network",
     },
   ];
 
   const requirements = [
-    "Professional certification or 2+ years experience",
+    "Professional certification",
     "Pass background check and verification process",
-    "Maintain 4.5+ star rating",
+    "Maintain 4+ star rating",
     "Provide your own equipment and transportation",
     "Available in Florida service areas",
     "Professional liability insurance (we can help)",
@@ -97,7 +117,7 @@ export default function Providers() {
                 with quality clients, set your own rates, and build your
                 business with the support you deserve.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <div className="flex justify-center mb-12">
                 <Button
                   asChild
                   size="lg"
@@ -107,17 +127,6 @@ export default function Providers() {
                     <Users className="w-5 h-5 mr-2" />
                     Apply Now
                     <ArrowRight className="w-5 h-5 ml-2" />
-                  </Link>
-                </Button>
-                <Button
-                  asChild
-                  size="lg"
-                  variant="outline"
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white text-lg px-8 py-6"
-                >
-                  <Link to="/provider-portal">
-                    <Calendar className="w-5 h-5 mr-2" />
-                    Learn More
                   </Link>
                 </Button>
               </div>
@@ -161,7 +170,7 @@ export default function Providers() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {benefits.map((benefit, index) => (
               <Card
                 key={index}
@@ -194,69 +203,6 @@ export default function Providers() {
         </div>
       </section>
 
-      {/* Earnings Potential */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-              <span className="text-roam-blue">Earning Potential</span> by
-              Service
-            </h2>
-            <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-              See what providers in your field are earning on the ROAM platform.
-            </p>
-          </div>
-
-          <div className="max-w-4xl mx-auto">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-roam-blue" />
-                  Florida Provider Earnings (2024)
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {earnings.map((earning, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between p-4 rounded-lg bg-accent/20 hover:bg-accent/30 transition-colors"
-                    >
-                      <div className="flex-1">
-                        <div className="font-semibold">{earning.service}</div>
-                        <div className="text-sm text-foreground/60">
-                          Per hour, before taxes
-                        </div>
-                      </div>
-                      <div className="text-center mx-4">
-                        <div className="text-lg font-bold text-roam-blue">
-                          {earning.range}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge
-                          variant={
-                            earning.demand === "Very High"
-                              ? "default"
-                              : "secondary"
-                          }
-                          className={
-                            earning.demand === "Very High"
-                              ? "bg-roam-success text-white"
-                              : ""
-                          }
-                        >
-                          {earning.demand} Demand
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
 
       {/* Requirements Section */}
       <section className="py-20 bg-background/50">
@@ -292,9 +238,8 @@ export default function Providers() {
                       </h4>
                       <p className="text-sm text-foreground/70">
                         All providers undergo comprehensive background checks,
-                        identity verification, and skill assessment. We also
-                        provide ongoing training and certification opportunities
-                        to help you grow.
+                        identity verification, and skill assessment to ensure
+                        quality and safety standards.
                       </p>
                     </div>
                   </div>
@@ -312,17 +257,20 @@ export default function Providers() {
             Ready to Start Earning More?
           </h2>
           <p className="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-            Join hundreds of successful providers who've grown their business
-            with ROAM. Application takes less than 10 minutes.
+            Join with successful providers who've grown their business with
+            ROAM. Application takes less than 10 minutes.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
+              asChild
               size="lg"
               variant="secondary"
               className="bg-white text-roam-blue hover:bg-white/90 text-lg px-8 py-6"
             >
-              <Users className="w-5 h-5 mr-2" />
-              Start Application
+              <Link to="/provider-portal?tab=signup">
+                <Users className="w-5 h-5 mr-2" />
+                Start Application
+              </Link>
             </Button>
           </div>
 

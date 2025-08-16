@@ -507,7 +507,24 @@ export default function Checkout() {
                   </Button>
 
                   <div className="text-xs text-foreground/60 text-center mt-4">
-                    By confirming, you agree to our terms of service and privacy policy.
+                    By confirming, you agree to our{" "}
+                    <a
+                      href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-roam-blue hover:underline"
+                    >
+                      terms & conditions
+                    </a>{" "}
+                    and{" "}
+                    <a
+                      href="https://app.termly.io/policy-viewer/policy.html?policyUUID=64dec2e3-d030-4421-86ff-a3e7864709d8"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-roam-blue hover:underline"
+                    >
+                      privacy policy
+                    </a>.
                   </div>
                 </CardContent>
               </Card>

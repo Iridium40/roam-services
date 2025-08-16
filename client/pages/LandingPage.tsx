@@ -335,7 +335,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-roam-light-blue/5 to-roam-yellow/10">
       {/* Google One Tap - only show when not authenticated */}
-      {!isCustomer && import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+      {false && !isCustomer && import.meta.env.VITE_GOOGLE_CLIENT_ID && (
         <GoogleOneTap
           clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}
           onSuccess={() => {
@@ -356,7 +356,6 @@ export default function LandingPage() {
                 alt="ROAM - Your Best Life. Everywhere."
                 className="h-10 w-auto"
               />
-              <span className="text-2xl font-semibold text-roam-blue">Services</span>
             </div>
             <nav className="hidden md:flex items-center space-x-8">
               <a
@@ -731,6 +730,34 @@ export default function LandingPage() {
             </div>
           </div>
           <div className="border-t border-border/50 mt-8 pt-8 text-center text-foreground/60">
+            <div className="flex justify-center space-x-6 mb-4">
+              <a
+                href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-roam-blue transition-colors"
+              >
+                Terms & Conditions
+              </a>
+              <span>•</span>
+              <a
+                href="https://app.termly.io/policy-viewer/policy.html?policyUUID=64dec2e3-d030-4421-86ff-a3e7864709d8"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-roam-blue transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <span>•</span>
+              <a
+                href="https://app.termly.io/policy-viewer/policy.html?policyUUID=f7401bab-92b4-49f6-b887-ba0e7a03a16a"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-roam-blue transition-colors"
+              >
+                Cookie Policy
+              </a>
+            </div>
             <p>
               &copy; 2024 ROAM. All rights reserved. Connecting you with
               professional services.

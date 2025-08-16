@@ -267,7 +267,7 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
   };
 
   // Disable OAuth providers temporarily due to configuration issues
-  const showOAuthProviders = true;
+  const showOAuthProviders = false; // Temporarily disabled until Google OAuth origin is configured
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
@@ -707,7 +707,24 @@ export const CustomerAuthModal: React.FC<CustomerAuthModalProps> = ({
         </Tabs>
 
         <div className="text-center text-sm text-foreground/60">
-          By signing up, you agree to our Terms of Service and Privacy Policy
+          By signing up, you agree to our{" "}
+          <a
+            href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-roam-blue hover:underline"
+          >
+            Terms & Conditions
+          </a>{" "}
+          and{" "}
+          <a
+            href="https://app.termly.io/policy-viewer/policy.html?policyUUID=64dec2e3-d030-4421-86ff-a3e7864709d8"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-roam-blue hover:underline"
+          >
+            Privacy Policy
+          </a>
         </div>
       </DialogContent>
     </Dialog>

@@ -48,9 +48,54 @@ export interface Conversation {
 export const useConversations = () => {
   const { user, customer, userType } = useAuth();
   const { toast } = useToast();
-  
+
   // Get the current user data (either provider or customer)
   const currentUser = user || customer;
+
+  // Helper function to safely handle fetch responses
+  const safeFetch = async (url: string, options: RequestInit) => {
+    let response: Response | null = null;
+
+    try {
+      response = await fetch(url, options);
+
+      if (!response.ok) {
+        // For error cases, try to get error details
+        let errorText = `HTTP ${response.status}`;
+        try {
+          const contentType = response.headers.get('content-type');
+          if (contentType && contentType.includes('application/json')) {
+            const errorData = await response.json();
+            errorText = errorData.error || errorData.message || errorText;
+          } else {
+            errorText = await response.text() || errorText;
+          }
+        } catch {
+          // If we can't read the error body, just use the status
+        }
+        throw new Error(errorText);
+      }
+
+      // For success cases, read JSON from the response
+      const result = await response.json();
+      return result;
+    } catch (error: any) {
+      console.error('SafeFetch error:', error);
+
+      // Handle specific fetch/response errors
+      if (error.message?.includes('body stream already read') ||
+          error.message?.includes('Response body is already used') ||
+          error.message?.includes('already read')) {
+        throw new Error('Network request failed - please try again');
+      }
+
+      if (error.name === 'TypeError' && error.message?.includes('fetch')) {
+        throw new Error('Network connection failed - please check your connection');
+      }
+
+      throw error;
+    }
+  };
   
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [currentConversation, setCurrentConversation] = useState<string | null>(null);
@@ -93,8 +138,8 @@ export const useConversations = () => {
         participants
       };
       console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
-      
-      const response = await fetch('/api/twilio-conversations', {
+
+      const result = await safeFetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -102,8 +147,6 @@ export const useConversations = () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log('📥 Response status:', response.status);
-      const result = await response.json();
       console.log('📥 Response result:', result);
       
       if (!result.success) {
@@ -132,20 +175,20 @@ export const useConversations = () => {
   // Load conversations for the current user
   const loadConversations = useCallback(async () => {
     if (!currentUser) return;
-    
+
     console.log('loadConversations called for user:', currentUser.id);
-    
+
     try {
       setLoading(true);
       setError(null);
-      
+
       const requestBody = {
         action: 'get-conversations',
         userId: currentUser.id
       };
       console.log('Sending request to /api/twilio-conversations:', requestBody);
-      
-      const response = await fetch('/api/twilio-conversations', {
+
+      const result = await safeFetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -153,10 +196,8 @@ export const useConversations = () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log('Response status:', response.status);
-      const result = await response.json();
       console.log('Response result:', result);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to load conversations');
       }
@@ -173,23 +214,23 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [currentUser, toast]);
+  }, [currentUser, toast, safeFetch]);
 
   // Load messages for a specific conversation
   const loadMessages = useCallback(async (conversationSid: string) => {
     console.log('loadMessages called for conversation:', conversationSid);
-    
+
     try {
       setLoading(true);
       setError(null);
-      
+
       const requestBody = {
         action: 'get-messages',
         conversationSid
       };
       console.log('Sending request to /api/twilio-conversations:', requestBody);
-      
-      const response = await fetch('/api/twilio-conversations', {
+
+      const result = await safeFetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -197,10 +238,8 @@ export const useConversations = () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log('Response status:', response.status);
-      const result = await response.json();
       console.log('Response result:', result);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to load messages');
       }
@@ -217,7 +256,7 @@ export const useConversations = () => {
     } finally {
       setLoading(false);
     }
-  }, [toast]);
+  }, [toast, safeFetch]);
 
   // Send a message
   const sendMessage = useCallback(async (conversationSid: string, message: string) => {
@@ -246,8 +285,8 @@ export const useConversations = () => {
         userId: currentUser.id
       };
       console.log('Sending request to /api/twilio-conversations:', requestBody);
-      
-      const response = await fetch('/api/twilio-conversations', {
+
+      const result = await safeFetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -255,10 +294,8 @@ export const useConversations = () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log('Response status:', response.status);
-      const result = await response.json();
       console.log('Response result:', result);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to send message');
       }
@@ -295,7 +332,7 @@ export const useConversations = () => {
     } finally {
       setSending(false);
     }
-  }, [currentUser, getUserType, getUserIdentity, toast]);
+  }, [currentUser, getUserType, getUserIdentity, toast, safeFetch]);
 
   // Load participants for a conversation
   const loadParticipants = useCallback(async (conversationSid: string) => {
@@ -310,8 +347,8 @@ export const useConversations = () => {
         conversationSid
       };
       console.log('Sending request to /api/twilio-conversations:', requestBody);
-      
-      const response = await fetch('/api/twilio-conversations', {
+
+      const result = await safeFetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -319,10 +356,8 @@ export const useConversations = () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log('Response status:', response.status);
-      const result = await response.json();
       console.log('Response result:', result);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to load participants');
       }
@@ -356,8 +391,8 @@ export const useConversations = () => {
         userType: participantUserType
       };
       console.log('Sending request to /api/twilio-conversations:', requestBody);
-      
-      const response = await fetch('/api/twilio-conversations', {
+
+      const result = await safeFetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -365,10 +400,8 @@ export const useConversations = () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log('Response status:', response.status);
-      const result = await response.json();
       console.log('Response result:', result);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to add participant');
       }
@@ -407,8 +440,8 @@ export const useConversations = () => {
         userId: currentUser.id
       };
       console.log('Sending request to /api/twilio-conversations:', requestBody);
-      
-      const response = await fetch('/api/twilio-conversations', {
+
+      const result = await safeFetch('/api/twilio-conversations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -416,10 +449,8 @@ export const useConversations = () => {
         body: JSON.stringify(requestBody),
       });
 
-      console.log('Response status:', response.status);
-      const result = await response.json();
       console.log('Response result:', result);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Failed to mark messages as read');
       }
@@ -446,18 +477,18 @@ export const useConversations = () => {
     if (conversationSid) {
       // Call these functions directly to avoid dependency issues
       const loadMessagesDirectly = async () => {
-        console.log('📨 Loading messages for conversation:', conversationSid);
+        console.log('��� Loading messages for conversation:', conversationSid);
         try {
           setLoading(true);
           setError(null);
-          
+
           const requestBody = {
             action: 'get-messages',
             conversationSid
           };
           console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
-          
-          const response = await fetch('/api/twilio-conversations', {
+
+          const result = await safeFetch('/api/twilio-conversations', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -465,10 +496,8 @@ export const useConversations = () => {
             body: JSON.stringify(requestBody),
           });
 
-          console.log('📥 Response status:', response.status);
-          const result = await response.json();
           console.log('📥 Response result:', result);
-          
+
           if (!result.success) {
             throw new Error(result.error || 'Failed to load messages');
           }
@@ -492,14 +521,14 @@ export const useConversations = () => {
         try {
           setLoading(true);
           setError(null);
-          
+
           const requestBody = {
             action: 'get-conversation-participants',
             conversationSid
           };
           console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
-          
-          const response = await fetch('/api/twilio-conversations', {
+
+          const result = await safeFetch('/api/twilio-conversations', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -507,10 +536,8 @@ export const useConversations = () => {
             body: JSON.stringify(requestBody),
           });
 
-          console.log('📥 Response status:', response.status);
-          const result = await response.json();
           console.log('📥 Response result:', result);
-          
+
           if (!result.success) {
             throw new Error(result.error || 'Failed to load participants');
           }
@@ -542,20 +569,20 @@ export const useConversations = () => {
     if (currentUser) {
       console.log('🔄 Loading conversations for user:', currentUser.id);
       // Call loadConversations directly instead of through dependency
-      const loadConversationsDirectly = async () => {
+      const loadConversationsDirectly = async (retryCount = 0) => {
         if (!currentUser) return;
-        
+
         try {
           setLoading(true);
           setError(null);
-          
+
           const requestBody = {
             action: 'get-conversations',
             userId: currentUser.id
           };
           console.log('📤 Sending request to /api/twilio-conversations:', requestBody);
-          
-          const response = await fetch('/api/twilio-conversations', {
+
+          const result = await safeFetch('/api/twilio-conversations', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -563,10 +590,8 @@ export const useConversations = () => {
             body: JSON.stringify(requestBody),
           });
 
-          console.log('📥 Response status:', response.status);
-          const result = await response.json();
           console.log('📥 Response result:', result);
-          
+
           if (!result.success) {
             throw new Error(result.error || 'Failed to load conversations');
           }
@@ -574,6 +599,17 @@ export const useConversations = () => {
           setConversations(result.conversations || []);
         } catch (error: any) {
           console.error('Error loading conversations:', error);
+
+          // Retry once on network-related errors
+          if (retryCount < 1 && (
+            error.message?.includes('Network request failed') ||
+            error.message?.includes('Network connection failed')
+          )) {
+            console.log('Retrying conversation load...');
+            setTimeout(() => loadConversationsDirectly(retryCount + 1), 1000);
+            return;
+          }
+
           setError(error.message || 'Failed to load conversations');
           toast({
             title: "Error",

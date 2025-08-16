@@ -64,7 +64,7 @@ export function Footer() {
               </li>
               <li>
                 <a href="#" className="hover:text-roam-blue transition-colors">
-                  Home Services
+                  IV Therapy
                 </a>
               </li>
               <li>
@@ -116,13 +116,33 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-roam-blue transition-colors">
+                <a
+                  href="https://app.termly.io/policy-viewer/policy.html?policyUUID=8bd3c211-2aaa-4626-9910-794dc2d85aff"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-roam-blue transition-colors"
+                >
+                  Terms & Conditions
+                </a>
+              </li>
+              <li>
+                <a
+                  href="https://app.termly.io/policy-viewer/policy.html?policyUUID=64dec2e3-d030-4421-86ff-a3e7864709d8"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-roam-blue transition-colors"
+                >
                   Privacy Policy
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-roam-blue transition-colors">
-                  Terms of Service
+                <a
+                  href="https://app.termly.io/policy-viewer/policy.html?policyUUID=f7401bab-92b4-49f6-b887-ba0e7a03a16a"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-roam-blue transition-colors"
+                >
+                  Cookie Policy
                 </a>
               </li>
             </ul>

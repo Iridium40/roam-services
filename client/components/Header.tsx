@@ -3,6 +3,8 @@ import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { EdgeNotificationCenter } from "@/components/EdgeNotificationCenter";
+import { CustomerDropdown } from "@/components/CustomerDropdown";
+import { CustomerSignInButton } from "@/components/CustomerSignInButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { useSystemConfig } from "@/hooks/useSystemConfig";
 
@@ -10,7 +12,8 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, customer } = useAuth();
   const { siteLogo } = useSystemConfig();
-  const isAuthenticated = user || customer;
+  const isProvider = !!user;
+  const isCustomer = !!customer;
 
   return (
     <nav className="border-b bg-background/80 backdrop-blur-md sticky top-0 z-50">
@@ -34,35 +37,25 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <a
-              href="#services"
-              className="text-foreground/70 hover:text-roam-blue transition-colors"
-            >
-              Services
-            </a>
-            <a
-              href="#how-it-works"
-              className="text-foreground/70 hover:text-roam-blue transition-colors"
-            >
-              How it Works
-            </a>
+            {isProvider && <EdgeNotificationCenter />}
+
+            {/* Customer Authentication */}
+            {isCustomer ? (
+              <CustomerDropdown />
+            ) : (
+              <CustomerSignInButton
+                variant="outline"
+                className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
+              />
+            )}
+
+            {/* Become a Provider link */}
             <Link
               to="/providers"
               className="text-foreground/70 hover:text-roam-blue transition-colors"
             >
               Become a Provider
             </Link>
-            {isAuthenticated && <EdgeNotificationCenter />}
-            <Button
-              asChild
-              variant="outline"
-              className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-            >
-              <Link to="/provider-portal">Sign In</Link>
-            </Button>
-            <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-              <Link to="/provider-portal">Get Started</Link>
-            </Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -85,36 +78,23 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t">
             <div className="flex flex-col space-y-4">
-              <a
-                href="#services"
-                className="text-foreground/70 hover:text-roam-blue transition-colors"
-              >
-                Services
-              </a>
-              <a
-                href="#how-it-works"
-                className="text-foreground/70 hover:text-roam-blue transition-colors"
-              >
-                How it Works
-              </a>
+              {/* Customer Authentication */}
+              {isCustomer ? (
+                <CustomerDropdown className="justify-start" />
+              ) : (
+                <CustomerSignInButton
+                  variant="outline"
+                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white justify-start"
+                />
+              )}
+
+              {/* Become a Provider link */}
               <Link
                 to="/providers"
                 className="text-foreground/70 hover:text-roam-blue transition-colors"
               >
                 Become a Provider
               </Link>
-              <div className="flex flex-col space-y-2 pt-4">
-                <Button
-                  asChild
-                  variant="outline"
-                  className="border-roam-blue text-roam-blue hover:bg-roam-blue hover:text-white"
-                >
-                  <Link to="/provider-portal">Sign In</Link>
-                </Button>
-                <Button asChild className="bg-roam-blue hover:bg-roam-blue/90">
-                  <Link to="/provider-portal">Get Started</Link>
-                </Button>
-              </div>
             </div>
           </div>
         )}

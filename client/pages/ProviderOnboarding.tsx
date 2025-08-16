@@ -35,6 +35,8 @@ import {
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import StripeIdentityVerification from "@/components/StripeIdentityVerification";
+import PartnerNDA from "@/components/PartnerNDA";
+import ProviderCodeOfConduct from "@/components/ProviderCodeOfConduct";
 
 export default function ProviderOnboarding() {
   const [currentStep, setCurrentStep] = useState(1);
@@ -77,6 +79,8 @@ export default function ProviderOnboarding() {
     backgroundConsent: false,
     termsAccepted: false,
     privacyAccepted: false,
+    ndaAccepted: false,
+    codeOfConductAccepted: false,
   });
 
   const steps = [
@@ -94,18 +98,30 @@ export default function ProviderOnboarding() {
     },
     {
       id: 3,
+      title: "Code of Conduct",
+      description: "Service provider standards",
+      icon: Users,
+    },
+    {
+      id: 4,
+      title: "NDA Agreement",
+      description: "Non-disclosure agreement",
+      icon: FileText,
+    },
+    {
+      id: 5,
       title: "Verification",
       description: "Identity and document verification",
       icon: Shield,
     },
     {
-      id: 4,
+      id: 6,
       title: "Professional Profile",
       description: "Services and expertise",
       icon: Star,
     },
     {
-      id: 5,
+      id: 7,
       title: "Review & Submit",
       description: "Final review and submission",
       icon: CheckCircle,
@@ -179,6 +195,26 @@ export default function ProviderOnboarding() {
   const handleVerificationPending = () => {
     setVerificationPending(true);
     setIdentityVerified(false);
+  };
+
+  const handleCodeOfConductAccepted = (signatureData: any) => {
+    console.log('Code of Conduct acknowledged:', signatureData);
+    setFormData(prev => ({
+      ...prev,
+      codeOfConductAccepted: true,
+    }));
+    // Automatically advance to next step
+    handleNext();
+  };
+
+  const handleNDAAccepted = (signatureData: any) => {
+    console.log('NDA signed:', signatureData);
+    setFormData(prev => ({
+      ...prev,
+      ndaAccepted: true,
+    }));
+    // Automatically advance to next step
+    handleNext();
   };
 
   const handleSubmit = async () => {
@@ -562,8 +598,48 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 3: Identity Verification with Stripe */}
+              {/* Step 3: Code of Conduct */}
               {currentStep === 3 && (
+                <div className="space-y-6">
+                  <div className="text-center mb-6">
+                    <h3 className="text-xl font-semibold mb-2">
+                      Service Provider Code of Conduct
+                    </h3>
+                    <p className="text-gray-600">
+                      Please review and acknowledge our professional standards and expectations.
+                    </p>
+                  </div>
+
+                  <ProviderCodeOfConduct
+                    onAccepted={handleCodeOfConductAccepted}
+                    businessName={formData.businessName}
+                    className="max-w-none"
+                  />
+                </div>
+              )}
+
+              {/* Step 4: NDA Agreement */}
+              {currentStep === 4 && (
+                <div className="space-y-6">
+                  <div className="text-center mb-6">
+                    <h3 className="text-xl font-semibold mb-2">
+                      Non-Disclosure Agreement
+                    </h3>
+                    <p className="text-gray-600">
+                      Please review and sign our NDA to protect customer privacy and confidential information.
+                    </p>
+                  </div>
+
+                  <PartnerNDA
+                    onAccepted={handleNDAAccepted}
+                    businessName={formData.businessName}
+                    className="max-w-none"
+                  />
+                </div>
+              )}
+
+              {/* Step 5: Identity Verification with Stripe */}
+              {currentStep === 5 && (
                 <div className="space-y-6">
                   <StripeIdentityVerification
                     onVerificationComplete={handleVerificationComplete}
@@ -656,8 +732,8 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 4: Professional Profile */}
-              {currentStep === 4 && (
+              {/* Step 6: Professional Profile */}
+              {currentStep === 6 && (
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <Label htmlFor="bio">Professional Bio *</Label>
@@ -763,8 +839,8 @@ export default function ProviderOnboarding() {
                 </div>
               )}
 
-              {/* Step 5: Review & Submit */}
-              {currentStep === 5 && (
+              {/* Step 7: Review & Submit */}
+              {currentStep === 7 && (
                 <div className="space-y-6">
                   <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                     <div className="flex items-start gap-3">
@@ -855,10 +931,17 @@ export default function ProviderOnboarding() {
                       >
                         I have read and agree to the{" "}
                         <Button
+                          asChild
                           variant="link"
                           className="p-0 h-auto text-roam-blue"
                         >
-                          Privacy Policy
+                          <a
+                            href="https://app.termly.io/policy-viewer/policy.html?policyUUID=64dec2e3-d030-4421-86ff-a3e7864709d8"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Privacy Policy
+                          </a>
                         </Button>{" "}
                         and consent to the processing of my personal data for
                         verification purposes.
@@ -923,7 +1006,9 @@ export default function ProviderOnboarding() {
                       isSubmitting ||
                       !formData.termsAccepted ||
                       !formData.privacyAccepted ||
-                      !formData.backgroundConsent
+                      !formData.backgroundConsent ||
+                      !formData.ndaAccepted ||
+                      !formData.codeOfConductAccepted
                     }
                     className="bg-roam-blue hover:bg-roam-blue/90"
                   >

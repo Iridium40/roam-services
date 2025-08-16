@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import {
   ArrowLeft,
+  ArrowRight,
   Users,
   Lock,
   Mail,
@@ -28,7 +29,7 @@ import {
   Star,
 } from "lucide-react";
 import { BusinessRegistrationForm } from "@/components/BusinessRegistrationForm";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import type { BusinessRegistration, BusinessType } from "@/lib/database.types";
@@ -37,7 +38,12 @@ import { useAuth } from "@/contexts/AuthContext";
 export default function ProviderPortal() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("login");
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(() => {
+    // Default to "signup" tab if coming from "Get Started" button or if tab=signup is in URL
+    const tabParam = searchParams.get("tab");
+    return tabParam === "signup" || tabParam === "register" ? "signup" : "login";
+  });
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const { signIn } = useAuth();
@@ -45,6 +51,16 @@ export default function ProviderPortal() {
   useEffect(() => {
     checkIfAlreadyAuthenticated();
   }, []);
+
+  // Update active tab when URL parameters change
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam === "signup" || tabParam === "register") {
+      setActiveTab("signup");
+    } else if (tabParam === "login" || tabParam === "signin") {
+      setActiveTab("login");
+    }
+  }, [searchParams]);
 
   const checkIfAlreadyAuthenticated = async () => {
     // Skip Supabase client check since we're using direct API
@@ -331,71 +347,29 @@ export default function ProviderPortal() {
       </nav>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             {/* Left Side - Benefits */}
             <div className="space-y-8">
-              <div>
+              <div className="text-center lg:text-left">
+                <div className="flex justify-center mb-6">
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2Fa42b6f9ec53e4654a92af75aad56d14f%2F38446bf6c22b453fa45caf63b0513e21?format=webp&width=800"
+                    alt="ROAM - Your Best Life. Everywhere."
+                    className="h-16 w-auto"
+                  />
+                </div>
                 <h1 className="text-3xl sm:text-4xl font-bold mb-4">
                   Welcome to the{" "}
                   <span className="text-roam-blue">Provider Portal</span>
                 </h1>
-                <p className="text-lg text-foreground/70 mb-8">
-                  Join Florida's premier network of service professionals and
-                  start growing your business today.
-                </p>
               </div>
 
-              {/* Benefits Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {benefits.map((benefit, index) => (
-                  <Card key={index} className="border-border/50">
-                    <CardContent className="p-6">
-                      <div className="w-12 h-12 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-lg flex items-center justify-center mb-4">
-                        <benefit.icon className="w-6 h-6 text-white" />
-                      </div>
-                      <h3 className="font-semibold mb-2">{benefit.title}</h3>
-                      <p className="text-sm text-foreground/70">
-                        {benefit.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
 
-              {/* Success Stories */}
-              <Card className="bg-gradient-to-r from-roam-light-blue/10 to-roam-blue/10 border-roam-light-blue/30">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-roam-blue">
-                    <Star className="w-5 h-5" />
-                    Provider Success Stories
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <p className="text-sm text-foreground/80 italic mb-2">
-                      "ROAM has transformed my massage therapy business. I've
-                      tripled my income and love the flexibility!"
-                    </p>
-                    <p className="text-xs text-foreground/60">
-                      - Sarah J., Licensed Massage Therapist
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-foreground/80 italic mb-2">
-                      "The platform is easy to use and the customers are always
-                      respectful and verified."
-                    </p>
-                    <p className="text-xs text-foreground/60">
-                      - Michael C., Personal Trainer
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
 
             {/* Right Side - Auth Forms */}
-            <div className="w-full max-w-md mx-auto lg:mx-0">
+            <div className="w-full max-w-md mx-auto">
               <Card className="border-border/50 shadow-lg">
                 <CardHeader className="text-center pb-4">
                   <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto mb-4">
@@ -431,7 +405,7 @@ export default function ProviderPortal() {
                           <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4">
                             <div className="flex items-start gap-2">
                               <div className="w-4 h-4 text-red-600 mt-0.5">
-                                ⚠️
+                                ⚠���
                               </div>
                               <p className="text-sm text-red-800">{error}</p>
                             </div>
@@ -520,13 +494,49 @@ export default function ProviderPortal() {
                       </form>
                     </TabsContent>
 
-                    {/* Enhanced Business Registration Form */}
+                    {/* Provider Application - Phase 1 */}
                     <TabsContent value="signup">
-                      <BusinessRegistrationForm
-                        onSubmit={handleSignup}
-                        loading={isLoading}
-                        error={error}
-                      />
+                      <div className="text-center space-y-6">
+                        <div className="w-16 h-16 bg-gradient-to-br from-roam-blue to-roam-light-blue rounded-full flex items-center justify-center mx-auto">
+                          <Users className="w-8 h-8 text-white" />
+                        </div>
+
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">Start Your Provider Application</h3>
+                          <p className="text-gray-600 text-sm">
+                            Complete our streamlined two-phase application process to join the ROAM network.
+                          </p>
+                        </div>
+
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-left">
+                          <h4 className="font-medium text-blue-900 mb-3">Application Process:</h4>
+                          <div className="space-y-2 text-sm text-blue-800">
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 bg-blue-200 rounded-full flex items-center justify-center text-xs font-medium">1</div>
+                              <span><strong>Phase 1:</strong> Basic information and credentials</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <div className="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-xs font-medium">2</div>
+                              <span><strong>Phase 2:</strong> Financial setup after approval</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <Button
+                          asChild
+                          className="w-full bg-roam-blue hover:bg-roam-blue/90"
+                          size="lg"
+                        >
+                          <Link to="/provider-application/phase1">
+                            Begin Application
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Link>
+                        </Button>
+
+                        <p className="text-xs text-gray-500">
+                          Application typically takes 5-10 minutes to complete
+                        </p>
+                      </div>
                     </TabsContent>
                   </Tabs>
 
@@ -534,6 +544,15 @@ export default function ProviderPortal() {
                   <div className="mt-6 text-center text-sm text-foreground/60">
                     <p>
                       Need help?{" "}
+                      <Link to="/partner-faq">
+                        <Button
+                          variant="link"
+                          className="p-0 h-auto text-roam-blue"
+                        >
+                          Partner FAQ
+                        </Button>
+                      </Link>
+                      {" • "}
                       <Button
                         variant="link"
                         className="p-0 h-auto text-roam-blue"
