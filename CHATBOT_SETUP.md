@@ -30,10 +30,11 @@ client/
 ## Features Implemented
 
 ### 🤖 AI Integration
-- **Claude.ai API Integration** - Uses Anthropic's Claude-3-sonnet model
+- **Vercel AI Gateway** - Uses Anthropic's Claude-3.5-sonnet model via Vercel
 - **Smart Context Awareness** - Knows user type (customer/provider/owner/admin)
 - **Real-time Data Access** - Fetches user data from Supabase
 - **Role-based Responses** - Tailored responses based on user role
+- **Zero Configuration** - No API keys or rate limit management needed
 
 ### 🎯 User Experience
 - **Quick Actions** - Role-specific quick action buttons
