@@ -49,22 +49,19 @@ client/
 
 ## Environment Variables Required
 
-Add to your `.env` file:
-```
-VITE_CLAUDE_API_KEY=your_claude_api_key_here
-```
+**No API keys needed!** Vercel AI Gateway handles everything automatically.
 
-## Claude.ai API Key Setup
+## Vercel AI Gateway Setup
 
-1. **Get Claude.ai API Key**:
-   - Visit [Anthropic Console](https://console.anthropic.com/)
-   - Create an account or sign in
-   - Navigate to API Keys section
-   - Generate a new API key
+1. **Enable AI Gateway in Vercel**:
+   - Go to your Vercel project dashboard
+   - Settings → Integrations
+   - Find "AI Gateway" and enable it
+   - No API keys needed - Vercel handles everything!
 
-2. **Add to Environment**:
-   - Copy the API key to your `.env` file
-   - Restart your development server
+2. **Deploy to Vercel**:
+   - Push your code to trigger deployment
+   - AI Gateway will be automatically configured
 
 3. **Verify Connection**:
    - Open the chatbot (floating button)
