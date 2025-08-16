@@ -9,8 +9,9 @@ npm install ai @ai-sdk/anthropic
 
 ### 2. ✅ Created API Route
 - **File**: `api/chatbot/route.ts`
-- **Purpose**: Handles AI requests through Vercel AI Gateway
+- **Purpose**: Handles AI requests through Vercel AI Gateway with streaming
 - **Model**: Claude-3.5-sonnet-20241022
+- **Feature**: Real-time streaming responses
 
 ### 3. ✅ Updated Chatbot Components
 - **ChatbotContext**: Now uses `/api/chatbot` instead of direct Claude API
@@ -114,7 +115,7 @@ After deployment, test these scenarios:
 │   └── chatbot/
 │       └── route.ts              # ✅ New AI Gateway API route
 ├── client/
-│   ├─��� contexts/
+│   ├── contexts/
 │   │   └── ChatbotContext.tsx    # ✅ Updated to use new API
 │   └── components/
 │       ├── ChatBot.tsx           # ✅ Uses context
