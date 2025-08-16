@@ -51,9 +51,15 @@ client/
 - **Privacy Focused** - Only accesses relevant user data
 - **Error Handling** - Graceful fallbacks for API failures
 
-## Environment Variables Required
+## Environment Variables
 
-**No API keys needed!** Vercel AI Gateway handles everything automatically.
+### Optional Configuration
+Add to your `.env` file for enhanced AI Gateway access:
+```env
+AI_GATEWAY_API_KEY=your_ai_gateway_api_key
+```
+
+**Note**: API key is optional - Vercel AI Gateway can work without it, but having one may provide enhanced access and features.
 
 ## Vercel AI Gateway Setup
 
