@@ -10,16 +10,18 @@ async function main() {
     console.log('🤖 Starting AI demo...');
     
     // Check if API key is available
-    if (!process.env.ANTHROPIC_API_KEY) {
-      console.error('❌ ANTHROPIC_API_KEY not found in environment variables');
-      console.log('💡 Please create a .env file with your Anthropic API key:');
-      console.log('   ANTHROPIC_API_KEY=your_api_key_here');
+    if (!process.env.AI_GATEWAY_API_KEY) {
+      console.error('❌ AI_GATEWAY_API_KEY not found in environment variables');
+      console.log('💡 Please create a .env file with your AI Gateway API key:');
+      console.log('   AI_GATEWAY_API_KEY=your_api_key_here');
       return;
     }
 
     // Generate text using Claude
     const result = await generateText({
-      model: anthropic('claude-3-haiku-20240307'),
+      model: anthropic('claude-3-haiku-20240307', {
+        apiKey: process.env.AI_GATEWAY_API_KEY,
+      }),
       prompt: 'Hello! Please give me a brief, friendly introduction about yourself.',
       maxTokens: 100,
     });
