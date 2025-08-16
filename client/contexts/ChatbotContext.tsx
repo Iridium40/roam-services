@@ -1,0 +1,320 @@
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useAuth } from './AuthContext';
+import { supabase } from '@/lib/supabase';
+
+interface Message {
+  id: number;
+  type: 'user' | 'bot';
+  content: string;
+  timestamp: Date;
+}
+
+interface UserDataMap {
+  profile?: any;
+  bookings?: any[];
+  locations?: any[];
+  earnings?: any;
+  availability?: any[];
+  business?: any;
+  providers?: any[];
+  services?: any[];
+  transactions?: any[];
+  favorites?: any[];
+  adminStats?: any;
+  allUsers?: any[];
+  allBusinesses?: any[];
+}
+
+interface ChatbotContextType {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  messages: Message[];
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>;
+  inputMessage: string;
+  setInputMessage: (message: string) => void;
+  isLoading: boolean;
+  setIsLoading: (loading: boolean) => void;
+  isConnected: boolean;
+  setIsConnected: (connected: boolean) => void;
+  userData: UserDataMap;
+  setUserData: React.Dispatch<React.SetStateAction<UserDataMap>>;
+  lastDataRefresh: Date | null;
+  setLastDataRefresh: (date: Date | null) => void;
+  userContext: {
+    userId: string;
+    isAuthenticated: boolean;
+    userType: string;
+    role: string;
+    hasActiveBookings: boolean;
+    isPremiumUser: boolean;
+  };
+  refreshUserData: () => Promise<void>;
+  sendMessage: (message: string) => Promise<void>;
+}
+
+const ChatbotContext = createContext<ChatbotContextType | undefined>(undefined);
+
+export const useChatbot = () => {
+  const context = useContext(ChatbotContext);
+  if (context === undefined) {
+    throw new Error('useChatbot must be used within a ChatbotProvider');
+  }
+  return context;
+};
+
+interface ChatbotProviderProps {
+  children: ReactNode;
+}
+
+export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) => {
+  const { user, customer, userType } = useAuth();
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputMessage, setInputMessage] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
+  const [userData, setUserData] = useState<UserDataMap>({});
+  const [lastDataRefresh, setLastDataRefresh] = useState<Date | null>(null);
+
+  // Get current user (provider or customer)
+  const currentUser = user || customer;
+
+  // Create user context
+  const userContext = {
+    userId: currentUser?.id || 'anonymous',
+    isAuthenticated: !!currentUser,
+    userType: userType || (currentUser?.provider_role ? 'provider' : 'customer'),
+    role: currentUser?.provider_role || userType || 'customer',
+    hasActiveBookings: (userData.bookings || []).some(b => b.status === 'confirmed'),
+    isPremiumUser: currentUser?.subscription_tier === 'premium' || false,
+  };
+
+  // Check Claude.ai connection status
+  const checkConnection = async () => {
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.VITE_CLAUDE_API_KEY || '',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-sonnet-20240229',
+          max_tokens: 10,
+          messages: [{ role: 'user', content: 'test' }]
+        })
+      });
+      setIsConnected(response.status === 200 || response.status === 400); // 400 is expected for test
+    } catch {
+      setIsConnected(false);
+    }
+  };
+
+  // Refresh user data from Supabase
+  const refreshUserData = async () => {
+    if (!currentUser) return;
+
+    try {
+      const newUserData: UserDataMap = {};
+
+      // Get user profile
+      if (userContext.userType === 'provider' || userContext.userType === 'owner') {
+        const { data: profile } = await supabase
+          .from('providers')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+        newUserData.profile = profile;
+
+        // Get business data for owners
+        if (userContext.role === 'owner') {
+          const { data: business } = await supabase
+            .from('business_profiles')
+            .select('*')
+            .eq('provider_id', currentUser.id)
+            .single();
+          newUserData.business = business;
+        }
+      } else {
+        const { data: profile } = await supabase
+          .from('customers')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
+        newUserData.profile = profile;
+      }
+
+      // Get bookings
+      const { data: bookings } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq(userContext.userType === 'customer' ? 'customer_id' : 'business_id', currentUser.id)
+        .order('created_at', { ascending: false })
+        .limit(10);
+      newUserData.bookings = bookings || [];
+
+      // Get additional data based on user type
+      if (userContext.userType === 'customer') {
+        const { data: favorites } = await supabase
+          .from('customer_favorites')
+          .select('*')
+          .eq('customer_id', currentUser.id);
+        newUserData.favorites = favorites || [];
+
+        const { data: locations } = await supabase
+          .from('customer_locations')
+          .select('*')
+          .eq('customer_id', currentUser.id);
+        newUserData.locations = locations || [];
+      }
+
+      setUserData(newUserData);
+      setLastDataRefresh(new Date());
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
+    }
+  };
+
+  // Send message to Claude.ai
+  const sendMessage = async (message: string) => {
+    if (!message.trim() || isLoading) return;
+
+    // Add user message
+    const userMessage: Message = {
+      id: Date.now(),
+      type: 'user',
+      content: message,
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputMessage('');
+    setIsLoading(true);
+
+    try {
+      // Prepare context for Claude
+      const context = {
+        userType: userContext.userType,
+        role: userContext.role,
+        isAuthenticated: userContext.isAuthenticated,
+        hasData: Object.keys(userData).length > 0,
+        dataTypes: Object.keys(userData),
+        lastRefresh: lastDataRefresh?.toISOString(),
+      };
+
+      const systemPrompt = `You are ROAM AI Assistant, helping users with a mobile wellness and beauty services platform in Florida. 
+
+User Context: ${JSON.stringify(context)}
+
+Provide helpful, accurate responses about:
+- Booking services (beauty, wellness, fitness, IV therapy)
+- Managing appointments and availability
+- Platform features and navigation
+- Business management (for providers)
+- Account settings and preferences
+
+Keep responses concise and actionable. If you need specific user data that isn't available, suggest they check their dashboard or refresh the data.`;
+
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.VITE_CLAUDE_API_KEY || '',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-sonnet-20240229',
+          max_tokens: 1000,
+          messages: [
+            { role: 'user', content: `${systemPrompt}\n\nUser question: ${message}` }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Claude API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      const botResponse = data.content[0]?.text || 'Sorry, I encountered an error processing your request.';
+
+      // Add bot response
+      const botMessage: Message = {
+        id: Date.now() + 1,
+        type: 'bot',
+        content: botResponse,
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+      
+      // Fallback response
+      const errorMessage: Message = {
+        id: Date.now() + 1,
+        type: 'bot',
+        content: 'I\'m having trouble connecting to my AI service right now. Please try again in a moment, or contact support if the issue persists.',
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initialize connection check and welcome message
+  useEffect(() => {
+    checkConnection();
+
+    // Add welcome message when first opened
+    if (isOpen && messages.length === 0) {
+      const welcomeMessage: Message = {
+        id: 0,
+        type: 'bot',
+        content: `Hello! I'm your ROAM AI Assistant. I'm here to help you with booking services, managing your account, and navigating our platform. ${
+          userContext.isAuthenticated 
+            ? `I can see you're logged in as a ${userContext.userType}. How can I assist you today?`
+            : 'Feel free to ask me anything about our services!'
+        }`,
+        timestamp: new Date()
+      };
+      setMessages([welcomeMessage]);
+    }
+  }, [isOpen]);
+
+  // Refresh user data when user changes
+  useEffect(() => {
+    if (currentUser && isOpen) {
+      refreshUserData();
+    }
+  }, [currentUser, isOpen]);
+
+  const value: ChatbotContextType = {
+    isOpen,
+    setIsOpen,
+    messages,
+    setMessages,
+    inputMessage,
+    setInputMessage,
+    isLoading,
+    setIsLoading,
+    isConnected,
+    setIsConnected,
+    userData,
+    setUserData,
+    lastDataRefresh,
+    setLastDataRefresh,
+    userContext,
+    refreshUserData,
+    sendMessage,
+  };
+
+  return (
+    <ChatbotContext.Provider value={value}>
+      {children}
+    </ChatbotContext.Provider>
+  );
+};
