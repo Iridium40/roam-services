@@ -173,7 +173,7 @@ export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) =>
     }
   };
 
-  // Send message using Vercel AI Gateway
+  // Send message using Vercel AI Gateway with streaming
   const sendMessage = async (message: string) => {
     if (!message.trim() || isLoading) return;
 
@@ -189,8 +189,19 @@ export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) =>
     setInputMessage('');
     setIsLoading(true);
 
+    // Create a placeholder bot message for streaming
+    const botMessageId = Date.now() + 1;
+    const botMessage: Message = {
+      id: botMessageId,
+      type: 'bot',
+      content: '',
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, botMessage]);
+
     try {
-      // Use Vercel AI Gateway API route
+      // Use Vercel AI Gateway API route with streaming
       const response = await fetch('/api/chatbot', {
         method: 'POST',
         headers: {
@@ -207,33 +218,65 @@ export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) =>
         throw new Error(`API error: ${response.status}`);
       }
 
-      const data = await response.json();
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let accumulatedContent = '';
 
-      if (!data.success) {
-        throw new Error(data.error || 'Failed to get AI response');
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value, { stream: true });
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.trim() === '') continue;
+
+            try {
+              // Parse data stream format
+              if (line.startsWith('data: ')) {
+                const data = JSON.parse(line.slice(6));
+                if (data.type === 'text-delta' && data.textDelta) {
+                  accumulatedContent += data.textDelta;
+
+                  // Update the bot message with streaming content
+                  setMessages(prev =>
+                    prev.map(msg =>
+                      msg.id === botMessageId
+                        ? { ...msg, content: accumulatedContent }
+                        : msg
+                    )
+                  );
+                }
+              }
+            } catch (parseError) {
+              // Continue processing other lines if one fails
+              continue;
+            }
+          }
+        }
       }
 
-      // Add bot response
-      const botMessage: Message = {
-        id: Date.now() + 1,
-        type: 'bot',
-        content: data.response,
-        timestamp: new Date()
-      };
+      // Ensure we have some content
+      if (!accumulatedContent) {
+        throw new Error('No content received from streaming response');
+      }
 
-      setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
 
-      // Fallback response
-      const errorMessage: Message = {
-        id: Date.now() + 1,
-        type: 'bot',
-        content: 'I\'m having trouble connecting to my AI service right now. Please try again in a moment, or contact support if the issue persists.',
-        timestamp: new Date()
-      };
+      // Update the bot message with error content
+      const errorContent = 'I\'m having trouble connecting to my AI service right now. Please try again in a moment, or contact support if the issue persists.';
 
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages(prev =>
+        prev.map(msg =>
+          msg.id === botMessageId
+            ? { ...msg, content: errorContent }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
