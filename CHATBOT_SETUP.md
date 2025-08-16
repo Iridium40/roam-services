@@ -92,7 +92,7 @@ client/
 1. **ChatbotContext** - Global state management
 2. **AuthContext Integration** - User authentication data
 3. **Supabase Queries** - Real-time user data
-4. **Claude.ai API** - AI responses with context
+4. **Vercel AI Gateway** - AI responses with context via `/api/chatbot`
 
 ### Component Hierarchy:
 ```
