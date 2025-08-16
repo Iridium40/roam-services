@@ -16,9 +16,9 @@ export async function POST(request: Request) {
       );
     }
 
-    // Use Vercel AI Gateway with streaming (no API keys needed!)
+    // Use Vercel AI Gateway with streaming
     const result = streamText({
-      model: anthropic('claude-3-5-sonnet-20241022'),
+      model: anthropic('claude-4-sonnet'),
       prompt: `You are the ROAM AI Assistant with access to user account data.
 
 CURRENT USER CONTEXT:
