@@ -188,7 +188,12 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
                 <div className="bg-gray-100 p-3 rounded-lg">
                   <div className="flex items-center gap-2">
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-roam-blue"></div>
-                    <span className="text-sm text-gray-600">AI is thinking...</span>
+                    <span className="text-sm text-gray-600">
+                      {messages.some(m => m.type === 'bot' && m.content === '')
+                        ? 'AI is responding...'
+                        : 'AI is thinking...'
+                      }
+                    </span>
                   </div>
                 </div>
               </div>
