@@ -131,9 +131,9 @@ App
 ### Common Issues:
 
 1. **Red Connection Dot**:
-   - Check API key is correct
-   - Verify internet connection
-   - Check Claude.ai service status
+   - Ensure Vercel AI Gateway is enabled in project settings
+   - Verify deployment is successful
+   - Check Vercel dashboard for any issues
 
 2. **User Data Not Loading**:
    - Verify Supabase connection
@@ -141,15 +141,15 @@ App
    - Refresh user data manually
 
 3. **Messages Not Sending**:
-   - Check API key validity
-   - Verify rate limits not exceeded
+   - Check `/api/chatbot` endpoint is accessible
+   - Verify deployment status in Vercel
    - Check browser console for errors
 
 ### Development Tips:
-- Use browser dev tools to inspect network requests
+- Use browser dev tools to inspect network requests to `/api/chatbot`
 - Check console for detailed error messages
 - Test with different user roles/types
-- Monitor API usage in Anthropic console
+- Monitor usage in Vercel dashboard
 
 ## Future Enhancements
 
