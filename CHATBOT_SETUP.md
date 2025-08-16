@@ -30,12 +30,12 @@ client/
 ## Features Implemented
 
 ### 🤖 AI Integration
-- **Vercel AI Gateway** - Uses Anthropic's Claude-3.5-sonnet model via Vercel
+- **Vercel AI Gateway** - Uses Anthropic's Claude-4-sonnet model via Vercel
 - **Streaming Responses** - Real-time text streaming for better UX
 - **Smart Context Awareness** - Knows user type (customer/provider/owner/admin)
 - **Real-time Data Access** - Fetches user data from Supabase
 - **Role-based Responses** - Tailored responses based on user role
-- **Zero Configuration** - No API keys or rate limit management needed
+- **API Key Support** - Optional AI Gateway API key for enhanced access
 
 ### 🎯 User Experience
 - **Streaming Responses** - Real-time text streaming as AI types
