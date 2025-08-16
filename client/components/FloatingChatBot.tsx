@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import ChatBot from './ChatBot';
+import { useChatbot } from '@/contexts/ChatbotContext';
 
 export default function FloatingChatBot() {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isOpen, setIsOpen } = useChatbot();
 
   if (isOpen) {
     return <ChatBot isOpen={isOpen} onClose={() => setIsOpen(false)} />;
