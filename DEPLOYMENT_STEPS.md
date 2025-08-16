@@ -15,9 +15,14 @@ npm install ai @ai-sdk/anthropic
 - **API Key**: Optional AI Gateway API key support
 
 ### 3. ✅ Updated Chatbot Components
-- **ChatbotContext**: Now uses `/api/chatbot` instead of direct Claude API
-- **Removed**: Claude API key dependency
-- **Added**: Vercel AI Gateway integration
+- **ChatbotContext**: Now uses `/api/chatbot` with streaming support
+- **Model**: Upgraded to Claude-4-sonnet
+- **Added**: Vercel AI Gateway integration with optional API key
+
+### 4. ✅ Environment Configuration
+- **File**: `.env.local` (for development)
+- **Variable**: `AI_GATEWAY_API_KEY=AMk4EoHhZgcmtuALLZHerMNH`
+- **Purpose**: Enhanced AI Gateway access
 
 ## 🎯 Next Steps (For You to Complete)
 
