@@ -45,32 +45,77 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
     setIsLoading(true);
 
     try {
-      // This would integrate with Vercel AI SDK
-      // For now, we'll simulate a response
-      setTimeout(() => {
-        const botResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          role: "assistant",
-          content: getSimulatedResponse(input),
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, botResponse]);
-        setIsLoading(false);
-      }, 1000);
+      const response = await fetch('/api/chatbot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map(msg => ({
+            role: msg.role,
+            content: msg.content
+          })),
+        }),
+      });
 
-      // TODO: Replace with actual Vercel AI SDK implementation
-      // const response = await fetch('/api/chat', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify({
-      //     messages: [...messages, userMessage],
-      //   }),
-      // });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      // const data = await response.json();
-      // setMessages(prev => [...prev, data.message]);
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let assistantContent = '';
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: '',
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('0:')) {
+              try {
+                const jsonStr = line.slice(2);
+                const data = JSON.parse(jsonStr);
+                if (data.type === 'text-delta') {
+                  assistantContent += data.textDelta;
+                  setMessages((prev) => 
+                    prev.map(msg => 
+                      msg.id === assistantMessage.id 
+                        ? { ...msg, content: assistantContent }
+                        : msg
+                    )
+                  );
+                }
+              } catch (e) {
+                // Skip invalid JSON lines
+              }
+            }
+          }
+        }
+      }
+
+      setIsLoading(false);
     } catch (error) {
       console.error("Error sending message:", error);
+      
+      // Fallback to simulated response on error
+      const botResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "I'm sorry, I'm having trouble connecting right now. Please try again later.",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, botResponse]);
       setIsLoading(false);
     }
   };
