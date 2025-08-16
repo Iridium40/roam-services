@@ -16,9 +16,14 @@ export async function POST(request: Request) {
       );
     }
 
+    // Configure anthropic with API key if provided
+    const anthropicConfig = process.env.AI_GATEWAY_API_KEY
+      ? anthropic({ apiKey: process.env.AI_GATEWAY_API_KEY })
+      : anthropic;
+
     // Use Vercel AI Gateway with streaming
     const result = streamText({
-      model: anthropic('claude-4-sonnet'),
+      model: anthropicConfig('claude-4-sonnet'),
       prompt: `You are the ROAM AI Assistant with access to user account data.
 
 CURRENT USER CONTEXT:
