@@ -23,7 +23,7 @@ client/
 │   ├── ChatBot.tsx               # Main chatbot modal component
 │   └── FloatingChatBot.tsx       # Floating chat button
 ├── contexts/
-│   └��─ ChatbotContext.tsx        # Chatbot state management
+│   └── ChatbotContext.tsx        # Chatbot state management
 └── App.tsx                       # Updated with ChatbotProvider
 ```
 
@@ -38,10 +38,12 @@ client/
 - **Zero Configuration** - No API keys or rate limit management needed
 
 ### 🎯 User Experience
+- **Streaming Responses** - Real-time text streaming as AI types
 - **Quick Actions** - Role-specific quick action buttons
-- **Connection Status** - Shows Claude.ai connection status
+- **Connection Status** - Shows AI Gateway connection status
 - **Data Refresh** - Manual refresh of user data
 - **Responsive Design** - Works on all screen sizes
+- **Typing Indicators** - Visual feedback during response generation
 
 ### 🔐 Security & Data
 - **Auth Integration** - Uses existing AuthContext
