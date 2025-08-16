@@ -173,7 +173,7 @@ export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) =>
     }
   };
 
-  // Send message to Claude.ai
+  // Send message using Vercel AI Gateway
   const sendMessage = async (message: string) => {
     if (!message.trim() || isLoading) return;
 
@@ -190,64 +190,41 @@ export const ChatbotProvider: React.FC<ChatbotProviderProps> = ({ children }) =>
     setIsLoading(true);
 
     try {
-      // Prepare context for Claude
-      const context = {
-        userType: userContext.userType,
-        role: userContext.role,
-        isAuthenticated: userContext.isAuthenticated,
-        hasData: Object.keys(userData).length > 0,
-        dataTypes: Object.keys(userData),
-        lastRefresh: lastDataRefresh?.toISOString(),
-      };
-
-      const systemPrompt = `You are ROAM AI Assistant, helping users with a mobile wellness and beauty services platform in Florida. 
-
-User Context: ${JSON.stringify(context)}
-
-Provide helpful, accurate responses about:
-- Booking services (beauty, wellness, fitness, IV therapy)
-- Managing appointments and availability
-- Platform features and navigation
-- Business management (for providers)
-- Account settings and preferences
-
-Keep responses concise and actionable. If you need specific user data that isn't available, suggest they check their dashboard or refresh the data.`;
-
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      // Use Vercel AI Gateway API route
+      const response = await fetch('/api/chatbot', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.VITE_CLAUDE_API_KEY || '',
-          'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-3-sonnet-20240229',
-          max_tokens: 1000,
-          messages: [
-            { role: 'user', content: `${systemPrompt}\n\nUser question: ${message}` }
-          ]
+          message: message,
+          userContext: userContext,
+          userData: userData
         })
       });
 
       if (!response.ok) {
-        throw new Error(`Claude API error: ${response.status}`);
+        throw new Error(`API error: ${response.status}`);
       }
 
       const data = await response.json();
-      const botResponse = data.content[0]?.text || 'Sorry, I encountered an error processing your request.';
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to get AI response');
+      }
 
       // Add bot response
       const botMessage: Message = {
         id: Date.now() + 1,
         type: 'bot',
-        content: botResponse,
+        content: data.response,
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
-      
+
       // Fallback response
       const errorMessage: Message = {
         id: Date.now() + 1,
