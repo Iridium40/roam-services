@@ -173,11 +173,22 @@ export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
                       : 'bg-gray-100 text-gray-900'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <div className="flex items-start gap-2">
+                    <p className="text-sm whitespace-pre-wrap flex-1">
+                      {message.content}
+                      {/* Show cursor for streaming messages */}
+                      {message.type === 'bot' && isLoading && message.content && (
+                        <span className="animate-pulse">|</span>
+                      )}
+                    </p>
+                  </div>
                   <p className={`text-xs mt-1 ${
                     message.type === 'user' ? 'text-white/70' : 'text-gray-500'
                   }`}>
                     {message.timestamp.toLocaleTimeString()}
+                    {message.type === 'bot' && isLoading && message.content && (
+                      <span className="ml-2 text-roam-blue">Streaming...</span>
+                    )}
                   </p>
                 </div>
               </div>
