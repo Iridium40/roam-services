@@ -1,10 +1,16 @@
-import React, { useRef, useEffect } from 'react';
-import { Send, MessageCircle, User, Settings, Calendar, Shield, Database, Wifi, WifiOff, RefreshCw, Crown, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useChatbot } from '@/contexts/ChatbotContext';
+import React, { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Bot, User, Send, MessageCircle, X, Loader2 } from "lucide-react";
+
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  timestamp: Date;
+}
 
 interface ChatBotProps {
   isOpen: boolean;
@@ -12,241 +18,219 @@ interface ChatBotProps {
 }
 
 export default function ChatBot({ isOpen, onClose }: ChatBotProps) {
-  const {
-    messages,
-    inputMessage,
-    setInputMessage,
-    isLoading,
-    isConnected,
-    userData,
-    lastDataRefresh,
-    userContext,
-    refreshUserData,
-    sendMessage,
-  } = useChatbot();
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome",
+      role: "assistant",
+      content:
+        "Hi! I'm here to help answer questions about ROAM. What would you like to know?",
+      timestamp: new Date(),
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const sendMessage = async () => {
+    if (!input.trim()) return;
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: input,
+      timestamp: new Date(),
+    };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsLoading(true);
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim() || isLoading) return;
-    await sendMessage(inputMessage);
-  };
+    try {
+      const response = await fetch('/api/chatbot', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, userMessage].map(msg => ({
+            role: msg.role,
+            content: msg.content
+          })),
+        }),
+      });
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
+      let assistantContent = '';
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: '',
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, assistantMessage]);
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('0:')) {
+              try {
+                const jsonStr = line.slice(2);
+                const data = JSON.parse(jsonStr);
+                if (data.type === 'text-delta') {
+                  assistantContent += data.textDelta;
+                  setMessages((prev) => 
+                    prev.map(msg => 
+                      msg.id === assistantMessage.id 
+                        ? { ...msg, content: assistantContent }
+                        : msg
+                    )
+                  );
+                }
+              } catch (e) {
+                // Skip invalid JSON lines
+              }
+            }
+          }
+        }
+      }
+
+      setIsLoading(false);
+    } catch (error) {
+      console.error("Error sending message:", error);
+      
+      // Fallback to simulated response on error
+      const botResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "I'm sorry, I'm having trouble connecting right now. Please try again later.",
+        timestamp: new Date(),
+      };
+      setMessages((prev) => [...prev, botResponse]);
+      setIsLoading(false);
     }
   };
 
-  const roleConfig = {
-    owner: { label: 'Business Owner', icon: Settings, quickActions: [
-      { label: 'Check Bookings', query: 'Show me my recent bookings' },
-      { label: 'Business Analytics', query: 'How is my business performing?' },
-      { label: 'Manage Services', query: 'Help me manage my services' },
-      { label: 'Financial Summary', query: 'Show me my earnings summary' }
-    ]},
-    provider: { label: 'Provider', icon: User, quickActions: [
-      { label: 'My Schedule', query: 'What are my upcoming appointments?' },
-      { label: 'Availability', query: 'Help me update my availability' },
-      { label: 'Earnings', query: 'Show me my recent earnings' },
-      { label: 'Profile Settings', query: 'Help me update my profile' }
-    ]},
-    customer: { label: 'Customer', icon: User, quickActions: [
-      { label: 'Book Service', query: 'I want to book a beauty service' },
-      { label: 'My Bookings', query: 'Show me my upcoming appointments' },
-      { label: 'Find Providers', query: 'Help me find providers near me' },
-      { label: 'Account Settings', query: 'Help me update my account' }
-    ]},
-    admin: { label: 'Platform Admin', icon: Crown, quickActions: [
-      { label: 'System Status', query: 'Show me platform statistics' },
-      { label: 'User Management', query: 'Help me manage users' },
-      { label: 'Business Overview', query: 'Show me business metrics' },
-      { label: 'Support Issues', query: 'What support issues need attention?' }
-    ]}
-  };
+  const getSimulatedResponse = (userInput: string): string => {
+    const lowerInput = userInput.toLowerCase();
 
-  const currentRoleConfig = roleConfig[userContext.role as keyof typeof roleConfig] || roleConfig.customer;
+    if (lowerInput.includes("booking") || lowerInput.includes("appointment")) {
+      return "To make a booking, you can browse our services and select a provider that fits your needs. Each provider's profile shows their availability and pricing. Would you like help finding a specific type of service?";
+    }
+
+    if (lowerInput.includes("provider") || lowerInput.includes("join")) {
+      return "Interested in becoming a provider? Great! You can apply through our 'Become a Provider' page. We welcome verified professionals in beauty, fitness, wellness, and healthcare. The application process includes verification steps to ensure quality service.";
+    }
+
+    if (lowerInput.includes("payment") || lowerInput.includes("cost")) {
+      return "ROAM offers secure payment processing. You can see exact pricing on each provider's profile before booking. We accept major credit cards and digital payments. There are no hidden fees - what you see is what you pay.";
+    }
+
+    if (lowerInput.includes("cancel") || lowerInput.includes("refund")) {
+      return "Cancellation policies vary by provider, but most allow cancellations up to 24 hours before your appointment. You can manage your bookings in the 'My Bookings' section. For specific refund questions, please contact the provider directly or reach out to our support team.";
+    }
+
+    if (lowerInput.includes("location") || lowerInput.includes("area")) {
+      return "ROAM connects you with local service providers in your area. Our providers offer both in-home services and studio appointments. You can filter by location and see each provider's service radius on their profile.";
+    }
+
+    return "I'm here to help with questions about ROAM's services, booking process, becoming a provider, payments, and more. Could you please be more specific about what you'd like to know?";
+  };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="w-full max-w-2xl h-[80vh] flex flex-col">
-        <CardHeader className="border-b bg-gradient-to-r from-roam-blue to-roam-light-blue text-white">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <MessageCircle className="h-6 w-6" />
-                <div className={`absolute -top-1 -right-1 w-3 h-3 rounded-full ${
-                  isConnected ? 'bg-green-400' : 'bg-red-400'
-                }`} />
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold">ROAM AI Assistant</h2>
-                <p className="text-sm text-white/80">
-                  {isConnected ? 'Connected to Claude.ai' : 'Connection Issue'}
-                </p>
-              </div>
-            </div>
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              onClick={onClose}
-              className="text-white hover:bg-white/20"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
+    <div className="fixed inset-0 bg-black/50 flex items-end justify-end p-4 z-50">
+      <Card className="w-full max-w-md h-[500px] flex flex-col">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-roam-blue text-white rounded-t-lg">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Bot className="w-5 h-5" />
+            ROAM Assistant
+          </CardTitle>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="text-white hover:bg-white/20"
+          >
+            <X className="w-4 h-4" />
+          </Button>
         </CardHeader>
-
         <CardContent className="flex-1 flex flex-col p-0">
-          {/* User Status Bar */}
-          <div className="p-4 bg-gray-50 border-b">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <currentRoleConfig.icon className="h-4 w-4 text-roam-blue" />
-                <span className="text-sm font-medium">{currentRoleConfig.label}</span>
-                {userContext.isAuthenticated && (
-                  <Badge variant="outline" className="text-xs">
-                    {userContext.userType}
-                  </Badge>
-                )}
-              </div>
-              <div className="flex items-center gap-2">
-                {lastDataRefresh && (
-                  <span className="text-xs text-gray-500">
-                    Data: {lastDataRefresh.toLocaleTimeString()}
-                  </span>
-                )}
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={refreshUserData}
-                  className="h-6 w-6 p-0"
-                >
-                  <RefreshCw className="h-3 w-3" />
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          {userContext.isAuthenticated && (
-            <div className="p-4 bg-blue-50 border-b">
-              <h4 className="text-sm font-medium mb-2">Quick Actions</h4>
-              <div className="flex flex-wrap gap-2">
-                {currentRoleConfig.quickActions.map((action, index) => (
-                  <Button
-                    key={index}
-                    variant="outline"
-                    size="sm"
-                    onClick={() => sendMessage(action.query)}
-                    className="text-xs h-8"
-                  >
-                    {action.label}
-                  </Button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {messages.map((message) => (
-              <div
-                key={message.id}
-                className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
+          <ScrollArea className="flex-1 p-4">
+            <div className="space-y-4">
+              {messages.map((message) => (
                 <div
-                  className={`max-w-[80%] p-3 rounded-lg ${
-                    message.type === 'user'
-                      ? 'bg-roam-blue text-white'
-                      : 'bg-gray-100 text-gray-900'
+                  key={message.id}
+                  className={`flex gap-3 ${
+                    message.role === "user" ? "justify-end" : "justify-start"
                   }`}
                 >
-                  <div className="flex items-start gap-2">
-                    <p className="text-sm whitespace-pre-wrap flex-1">
-                      {message.content}
-                      {/* Show cursor for streaming messages */}
-                      {message.type === 'bot' && isLoading && message.content && (
-                        <span className="animate-pulse">|</span>
-                      )}
+                  {message.role === "assistant" && (
+                    <div className="w-8 h-8 rounded-full bg-roam-blue/10 flex items-center justify-center flex-shrink-0">
+                      <Bot className="w-4 h-4 text-roam-blue" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[80%] p-3 rounded-lg ${
+                      message.role === "user"
+                        ? "bg-roam-blue text-white"
+                        : "bg-gray-100 text-gray-900"
+                    }`}
+                  >
+                    <p className="text-sm">{message.content}</p>
+                    <p className="text-xs opacity-70 mt-1">
+                      {message.timestamp.toLocaleTimeString([], {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </p>
                   </div>
-                  <p className={`text-xs mt-1 ${
-                    message.type === 'user' ? 'text-white/70' : 'text-gray-500'
-                  }`}>
-                    {message.timestamp.toLocaleTimeString()}
-                    {message.type === 'bot' && isLoading && message.content && (
-                      <span className="ml-2 text-roam-blue">Streaming...</span>
-                    )}
-                  </p>
+                  {message.role === "user" && (
+                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                      <User className="w-4 h-4 text-gray-600" />
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
-            
-            {isLoading && (
-              <div className="flex justify-start">
-                <div className="bg-gray-100 p-3 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-roam-blue"></div>
-                    <span className="text-sm text-gray-600">
-                      {messages.some(m => m.type === 'bot' && m.content === '')
-                        ? 'AI is responding...'
-                        : 'AI is thinking...'
-                      }
-                    </span>
+              ))}
+              {isLoading && (
+                <div className="flex gap-3 justify-start">
+                  <div className="w-8 h-8 rounded-full bg-roam-blue/10 flex items-center justify-center flex-shrink-0">
+                    <Bot className="w-4 h-4 text-roam-blue" />
+                  </div>
+                  <div className="bg-gray-100 p-3 rounded-lg">
+                    <Loader2 className="w-4 h-4 animate-spin text-gray-600" />
                   </div>
                 </div>
-              </div>
-            )}
-            
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Connection Status */}
-          {!isConnected && (
-            <div className="px-4 py-2 bg-red-50 border-t border-red-200">
-              <div className="flex items-center gap-2 text-red-600">
-                <WifiOff className="h-4 w-4" />
-                <span className="text-sm">
-                  Connection to AI service lost. Some features may be limited.
-                </span>
-              </div>
+              )}
             </div>
-          )}
-
-          {/* Input Area */}
-          <div className="p-4 border-t bg-white">
+          </ScrollArea>
+          <div className="p-4 border-t">
             <div className="flex gap-2">
               <Input
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Ask me anything about ROAM services..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask me anything about ROAM..."
+                onKeyPress={(e) => e.key === "Enter" && sendMessage()}
                 disabled={isLoading}
-                className="flex-1"
               />
               <Button
-                onClick={handleSendMessage}
-                disabled={isLoading || !inputMessage.trim()}
-                className="bg-roam-blue hover:bg-roam-blue/90"
+                onClick={sendMessage}
+                disabled={!input.trim() || isLoading}
+                size="sm"
               >
-                <Send className="h-4 w-4" />
+                <Send className="w-4 h-4" />
               </Button>
             </div>
-            <p className="text-xs text-gray-500 mt-2">
-              Powered by Claude.ai • Press Enter to send • Shift+Enter for new line
-            </p>
           </div>
         </CardContent>
       </Card>
