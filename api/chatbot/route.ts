@@ -23,7 +23,7 @@ export async function POST(request: Request) {
 
     // Use Vercel AI Gateway with streaming
     const result = streamText({
-      model: anthropicConfig('claude-4-sonnet'),
+      model: anthropicConfig('claude-opus-4-20250514'),
       prompt: `You are the ROAM AI Assistant with access to user account data.
 
 CURRENT USER CONTEXT:
